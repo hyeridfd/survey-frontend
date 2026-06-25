@@ -72,7 +72,7 @@ export default function LoginPage() {
         <div className="text-center mb-6">
           {/* 메인 타이틀 */}
           <h1 className="text-2xl font-bold text-white tracking-tight leading-snug mb-3">
-            요양원 입소 고령자<br />건강 프로파일 분석 및<br />선호도 조사
+            요양원 입소 고령자 대상<br />건강 프로파일 분석 및 선호도 조사
           </h1>
           <div className="w-12 h-0.5 mx-auto rounded-full" style={{ background: 'rgba(255,255,255,0.4)' }}></div>
         </div>
@@ -177,7 +177,7 @@ export default function LoginPage() {
       {/* 하단 정보 */}
       <div className="text-center pb-8 px-4">
         <p className="text-xs text-blue-200 leading-relaxed">
-          서울대학교 농생명공학부<br />
+          서울대학교 농생공학부 정밀식의약솔루션 연구실<br />
           글로벌 블루푸드 미래리더 양성 프로젝트
         </p>
       </div>

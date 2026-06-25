@@ -36,36 +36,54 @@ const KMBI_ITEMS = [
   { id:'kmbi_11', label:'의자/침대 이동', desc:'의자나 침대로의 이동', options:KMBI_OPTIONS_BASE, scores:[0,3,8,12,15] },
 ]
 
-// MMSE 항목
-const MMSE_ITEMS = [
-  { key: 'mmse_time_year', label: '올해는 몇 년도입니까?' },
-  { key: 'mmse_time_month', label: '지금은 몇 월입니까?' },
-  { key: 'mmse_time_day', label: '오늘은 며칠입니까?' },
-  { key: 'mmse_time_weekday', label: '오늘은 무슨 요일입니까?' },
-  { key: 'mmse_time_season', label: '지금은 어느 계절입니까?' },
-  { key: 'mmse_place_country', label: '여기는 어느 나라입니까?' },
-  { key: 'mmse_place_city', label: '여기는 어느 시/도입니까?' },
-  { key: 'mmse_place_type', label: '여기는 어떤 곳입니까? (예: 병원, 요양원)' },
-  { key: 'mmse_place_name', label: '이곳의 이름이 무엇입니까?' },
-  { key: 'mmse_place_floor', label: '지금 몇 층에 있습니까?' },
-  { key: 'mmse_reg_airplane', label: '기억등록: 비행기' },
-  { key: 'mmse_reg_pencil', label: '기억등록: 연필' },
-  { key: 'mmse_reg_pine', label: '기억등록: 소나무' },
-  { key: 'mmse_recall_airplane', label: '기억회상: 비행기' },
-  { key: 'mmse_recall_pencil', label: '기억회상: 연필' },
-  { key: 'mmse_recall_pine', label: '기억회상: 소나무' },
-  { key: 'mmse_calc_1', label: '100-7=?' },
-  { key: 'mmse_calc_2', label: '93-7=?' },
-  { key: 'mmse_calc_3', label: '86-7=?' },
-  { key: 'mmse_calc_4', label: '79-7=?' },
-  { key: 'mmse_calc_5', label: '72-7=?' },
-  { key: 'mmse_naming', label: '이름 대기 (2점)' },
-  { key: 'mmse_repetition', label: '따라 말하기 (1점)' },
-  { key: 'mmse_comprehension', label: '3단계 명령 (3점)' },
-  { key: 'mmse_reading', label: '읽기 (1점)' },
-  { key: 'mmse_writing', label: '쓰기 (1점)' },
-  { key: 'mmse_drawing', label: '도형 그리기 (1점)' },
+// MMSE 카테고리 구조 (Streamlit과 동일)
+const MMSE_STRUCTURE = [
+  { category: '기억등록', items: [
+    { key: 'mmse_reg_airplane', name: '비행기', scores: [0,1] },
+    { key: 'mmse_reg_pencil', name: '연필', scores: [0,1] },
+    { key: 'mmse_reg_pine', name: '소나무', scores: [0,1] },
+  ]},
+  { category: '시간지남력', items: [
+    { key: 'mmse_time_year', name: '년', scores: [0,1] },
+    { key: 'mmse_time_month', name: '월', scores: [0,1] },
+    { key: 'mmse_time_day', name: '일', scores: [0,1] },
+    { key: 'mmse_time_weekday', name: '요일', scores: [0,1] },
+    { key: 'mmse_time_season', name: '계절', scores: [0,1] },
+  ]},
+  { category: '장소지남력', items: [
+    { key: 'mmse_place_country', name: '나라', scores: [0,1] },
+    { key: 'mmse_place_city', name: '시/도', scores: [0,1] },
+    { key: 'mmse_place_type', name: '무엇하는 곳 또는 구/시·군', scores: [0,1] },
+    { key: 'mmse_place_name', name: '현재 장소명', scores: [0,1] },
+    { key: 'mmse_place_floor', name: '몇 층 또는 동(도로명)/읍·면', scores: [0,1] },
+  ]},
+  { category: '기억회상', items: [
+    { key: 'mmse_recall_airplane', name: '비행기', scores: [0,1] },
+    { key: 'mmse_recall_pencil', name: '연필', scores: [0,1] },
+    { key: 'mmse_recall_pine', name: '소나무', scores: [0,1] },
+  ]},
+  { category: '주의집중 및 계산', items: [
+    { key: 'mmse_calc_1', name: '100 - 7', scores: [0,1] },
+    { key: 'mmse_calc_2', name: '- 7', scores: [0,1] },
+    { key: 'mmse_calc_3', name: '- 7', scores: [0,1] },
+    { key: 'mmse_calc_4', name: '- 7', scores: [0,1] },
+    { key: 'mmse_calc_5', name: '- 7', scores: [0,1] },
+  ]},
+  { category: '언어', subcategories: [
+    { name: '이름대기', items: [{ key: 'mmse_naming', name: '눈, 귀', scores: [0,1,2] }] },
+    { name: '따라 말하기', items: [{ key: 'mmse_repetition', name: '백문이 불여일견', scores: [0,1] }] },
+    { name: '이해', items: [{ key: 'mmse_comprehension', name: '동그라미를 가리키고, 네모를 가리킨 다음, 세모를 가리키세요', scores: [0,1,2,3] }] },
+    { name: '읽기', items: [{ key: 'mmse_reading', name: '(눈을 감으세요)', scores: [0,1] }] },
+    { name: '쓰기', items: [{ key: 'mmse_writing', name: '오늘 날씨를 한 문장으로 써 보세요.', scores: [0,1] }] },
+  ]},
+  { category: '그리기', items: [
+    { key: 'mmse_drawing', name: '오각형', scores: [0,1] },
+  ]},
 ]
+// 하위호환용 flat 배열 (점수 계산용)
+const MMSE_ITEMS = MMSE_STRUCTURE.flatMap(s =>
+  s.items ? s.items : s.subcategories.flatMap(sc => sc.items)
+)
 
 export default function BasicSurveyPage() {
   const navigate = useNavigate()
@@ -150,8 +168,8 @@ export default function BasicSurveyPage() {
   const kmbiStatusArr = kmbiPct >= 91 ? ['최소 의존(minimal)', '🟢'] : kmbiPct >= 75 ? ['경도 의존(mild)', '🟡'] : kmbiPct >= 50 ? ['중간 의존(moderate)', '🟠'] : kmbiPct >= 25 ? ['대부분 의존(substantial)', '🔴'] : ['완전 의존(full)', '⚫']
   const [kmbiStatus, kmbiEmoji] = kmbiStatusArr
 
-  // MMSE 점수
-  const mmseScore = MMSE_ITEMS.reduce((sum, item) => sum + (data[item.key] ? 1 : 0), 0)
+  // MMSE 점수 (각 항목 최대점수 합산)
+  const mmseScore = MMSE_ITEMS.reduce((sum, item) => sum + (Number(data[item.key]) || 0), 0)
 
   // MNA 점수
   const mnaScore = [
@@ -531,36 +549,77 @@ export default function BasicSurveyPage() {
       )}
 
       {/* ── 8페이지: MMSE ── */}
-      {page === 8 && (
-        <div>
-          <h2 className="section-title">인지기능 평가 (MMSE-K)</h2>
-          <InfoBox>각 항목에 정답이면 ✅, 틀리면 ❌를 선택하세요. (총 30점)</InfoBox>
-          <div className="space-y-2">
-            {MMSE_ITEMS.map(item => (
-              <div key={item.key} className="flex items-center justify-between py-2 border-b border-gray-100">
-                <span className="text-sm text-gray-700 flex-1">{item.label}</span>
-                <div className="flex gap-2 ml-4">
-                  {[{v:1,l:'✅'},{v:0,l:'❌'}].map(opt => (
-                    <button
-                      key={opt.v}
-                      type="button"
-                      onClick={() => update({ [item.key]: opt.v })}
-                      className={`w-10 h-8 rounded text-sm font-medium border transition-colors ${
-                        data[item.key] === opt.v
-                          ? 'bg-blue-600 border-blue-600 text-white'
-                          : 'bg-white border-gray-300 text-gray-600 hover:border-blue-300'
-                      }`}
-                    >{opt.l}</button>
-                  ))}
+      {page === 8 && (() => {
+        // 교육수준별 정상 기준 (Streamlit과 동일)
+        const edu = data.education || ''
+        const cutoff = edu.includes('무학') ? 19 : edu.includes('초등') ? 22 : 24
+        const mmseStatus = mmseScore >= cutoff ? '정상 인지기능' : mmseScore >= cutoff - 4 ? '경도 인지장애 의심' : '인지장애 의심'
+        const mmseStatusColor = mmseScore >= cutoff ? 'bg-green-50 border-green-300 text-green-800' : mmseScore >= cutoff - 4 ? 'bg-yellow-50 border-yellow-300 text-yellow-800' : 'bg-red-50 border-red-300 text-red-800'
+
+        const ScoreBtn = ({ itemKey, score }) => {
+          const cur = Number(data[itemKey] ?? -1)
+          return (
+            <button type="button"
+              onClick={() => update({ [itemKey]: score })}
+              className={`w-9 h-9 rounded-lg text-sm font-bold border-2 transition-colors ${
+                cur === score ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-gray-300 text-gray-600 hover:border-blue-400'
+              }`}>{score}</button>
+          )
+        }
+
+        const ItemRow = ({ item }) => (
+          <div className="flex items-center justify-between py-2.5 border-b border-gray-100 last:border-0">
+            <span className="text-sm text-gray-700 flex-1 pr-3">{item.name}</span>
+            <div className="flex gap-1.5 shrink-0">
+              {item.scores.map(s => <ScoreBtn key={s} itemKey={item.key} score={s} />)}
+            </div>
+          </div>
+        )
+
+        return (
+          <div>
+            <h2 className="section-title">K-MMSE-2 (간이정신상태검사 한국판)</h2>
+            <InfoBox>📝 인지기능을 평가합니다. 각 항목의 점수를 클릭하여 선택하세요.</InfoBox>
+
+            {MMSE_STRUCTURE.map(section => (
+              <div key={section.category} className="mb-4">
+                <h3 className="text-sm font-bold text-gray-800 bg-gray-100 px-3 py-2 rounded-lg mb-1">{section.category}</h3>
+                <div className="px-1">
+                  {section.items
+                    ? section.items.map(item => <ItemRow key={item.key} item={item} />)
+                    : section.subcategories.map(sub => (
+                        <div key={sub.name} className="mb-2">
+                          <p className="text-xs font-semibold text-blue-700 px-1 py-1">{sub.name}</p>
+                          {sub.items.map(item => <ItemRow key={item.key} item={item} />)}
+                        </div>
+                      ))
+                  }
                 </div>
               </div>
             ))}
+
+            {/* 결과 */}
+            <div className="mt-4 space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 text-center">
+                  <p className="text-xs text-gray-500">총점</p>
+                  <p className="text-2xl font-bold text-blue-700 mt-1">{mmseScore}<span className="text-sm text-gray-400"> / 30점</span></p>
+                </div>
+                <div className={`border rounded-xl p-3 text-center ${mmseStatusColor}`}>
+                  <p className="text-xs opacity-70">판정</p>
+                  <p className="text-sm font-bold mt-1">{mmseStatus}</p>
+                  <p className="text-xs opacity-70 mt-0.5">기준 ≥{cutoff}점</p>
+                </div>
+              </div>
+              <div className="bg-gray-50 rounded-xl px-4 py-3 text-xs text-gray-600 leading-relaxed">
+                <strong>교육 수준별 정상 기준:</strong><br/>
+                무학: ≥19점 &nbsp;|&nbsp; 초등학교 졸업: ≥22점 &nbsp;|&nbsp; 중학교 이상: ≥24점
+              </div>
+              <p className="text-xs text-gray-400 px-1">※ 대체문항: 집/시·동-통/도·방/작·지명/소록 (대체문항에 관한 자세한 내용은 사용자 지침서를 참고하시기 바랍니다.)</p>
+            </div>
           </div>
-          <InfoBox type={mmseScore >= 24 ? 'success' : mmseScore >= 18 ? 'warning' : 'info'} >
-            MMSE-K 총점: <strong>{mmseScore} / 30점</strong> — {mmseScore >= 24 ? '정상' : mmseScore >= 18 ? '경증 인지장애' : '중증 인지장애'}
-          </InfoBox>
-        </div>
-      )}
+        )
+      })()}
 
       {/* ── 9페이지: 시설 특성 ── */}
       {page === 9 && (

@@ -6,6 +6,7 @@ import AdminPage from './pages/AdminPage'
 import BasicSurveyPage from './pages/surveys/BasicSurveyPage'
 import NutritionSurveyPage from './pages/surveys/NutritionSurveyPage'
 import SatisfactionSurveyPage from './pages/surveys/SatisfactionSurveyPage'
+import BluefoodSurveyPage from './pages/surveys/BluefoodSurveyPage'
 
 function PrivateRoute({ children }) {
   const token = useAuthStore((s) => s.token)
@@ -28,6 +29,7 @@ export default function App() {
       <Route path="/survey/basic" element={<PrivateRoute><BasicSurveyPage /></PrivateRoute>} />
       <Route path="/survey/nutrition" element={<PrivateRoute><NutritionSurveyPage /></PrivateRoute>} />
       <Route path="/survey/satisfaction" element={<PrivateRoute><SatisfactionSurveyPage /></PrivateRoute>} />
+      <Route path="/survey/bluefood" element={<PrivateRoute><BluefoodSurveyPage /></PrivateRoute>} />
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   )

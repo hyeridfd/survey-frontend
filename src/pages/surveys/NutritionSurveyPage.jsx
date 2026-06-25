@@ -17,7 +17,7 @@ const MEAL_FOODS = {
 const MEALS = Object.keys(MEAL_FOODS)
 
 // ── 잔반량 원형 SVG ──
-function WasteCircle({ level, size = 56 }) {
+function WasteCircle({ level, size = 40 }) {
   const fills = [
     null,
     'M 50 50 L 50 5 A 45 45 0 0 1 95 50 Z',
@@ -26,8 +26,8 @@ function WasteCircle({ level, size = 56 }) {
     null,
   ]
   return (
-    <svg viewBox="0 0 100 100" style={{ width: size, height: size }}>
-      <circle cx="50" cy="50" r="45" fill={level === 4 ? '#2c3e50' : 'white'} stroke="#333" strokeWidth="2" />
+    <svg viewBox="0 0 100 100" style={{ width: size, height: size, flexShrink: 0 }}>
+      <circle cx="50" cy="50" r="45" fill={level === 4 ? '#2c3e50' : 'white'} stroke="#333" strokeWidth="3" />
       {fills[level] && <path d={fills[level]} fill="#2c3e50" />}
     </svg>
   )
@@ -44,34 +44,39 @@ function GramInput({ label, value, onChange }) {
           {Number(val).toFixed(2)}
         </div>
         <button type="button" onClick={() => onChange(Math.max(0, val - 10))}
-          className="w-9 h-9 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg border border-gray-200 text-gray-600 font-bold text-lg">−</button>
+          className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg border border-gray-200 text-gray-600 font-bold text-xl">−</button>
         <button type="button" onClick={() => onChange(val + 10)}
-          className="w-9 h-9 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg border border-gray-200 text-gray-600 font-bold text-lg">+</button>
+          className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg border border-gray-200 text-gray-600 font-bold text-xl">+</button>
       </div>
       <input type="number" min={0} step={1} value={val}
         onChange={e => onChange(Number(e.target.value) || 0)}
-        className="mt-1 w-full text-xs border border-gray-200 rounded px-2 py-1 text-gray-500 bg-white"
+        className="mt-1 w-full text-xs border border-gray-200 rounded px-2 py-1.5 text-gray-500 bg-white"
         placeholder="직접 입력" />
     </div>
   )
 }
 
-// ── 잔반 선택 ──
+// ── 잔반 선택 (태블릿/모바일 최적화) ──
 function WasteSelector({ label, value, onChange }) {
   const levels = [
-    { v: 0, l: '다 먹음' }, { v: 1, l: '25%' },
-    { v: 2, l: '50%' }, { v: 3, l: '75%' }, { v: 4, l: '모두' },
+    { v: 0, l: '다 먹음' },
+    { v: 1, l: '25%' },
+    { v: 2, l: '50%' },
+    { v: 3, l: '75%' },
+    { v: 4, l: '모두' },
   ]
   return (
-    <div className="mb-3">
-      <p className="text-xs font-medium text-gray-600 mb-1">{label}</p>
-      <div className="flex gap-1.5">
+    <div className="mb-4">
+      <p className="text-sm font-medium text-gray-700 mb-2">{label}</p>
+      <div className="flex gap-2 justify-between">
         {levels.map(opt => (
           <button key={opt.v} type="button" onClick={() => onChange(opt.v)}
-            className={`flex flex-col items-center p-1 rounded-lg border-2 transition-colors flex-1 ${
-              value === opt.v ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-200'}`}>
-            <WasteCircle level={opt.v} size={36} />
-            <span className="text-xs text-gray-500 mt-0.5">{opt.l}</span>
+            className={`flex flex-col items-center py-2 px-1 rounded-xl border-2 transition-colors flex-1 min-w-0 ${
+              value === opt.v
+                ? 'border-blue-500 bg-blue-50'
+                : 'border-gray-200 hover:border-blue-300 bg-white'}`}>
+            <WasteCircle level={opt.v} size={44} />
+            <span className="text-xs text-gray-600 mt-1 whitespace-nowrap">{opt.l}</span>
           </button>
         ))}
       </div>
@@ -79,20 +84,19 @@ function WasteSelector({ label, value, onChange }) {
   )
 }
 
-// ── 사진 업로드 박스 ──
+// ── 사진 업로드 박스 (촬영 + 앨범 선택 분리) ──
 function PhotoUploader({ day, meal, photoType, label, uploadedUrl, onUploaded, onDeleted }) {
-  const inputRef = useRef(null)
+  const cameraRef = useRef(null)   // 카메라 촬영용
+  const galleryRef = useRef(null)  // 앨범 선택용
   const [uploading, setUploading] = useState(false)
   const [preview, setPreview] = useState(uploadedUrl || null)
   const [error, setError] = useState('')
 
-  // 부모에서 url이 바뀌면 preview 동기화
   useEffect(() => { setPreview(uploadedUrl || null) }, [uploadedUrl])
 
   const handleFile = async (file) => {
     if (!file) return
     setError('')
-    // 로컬 미리보기
     setPreview(URL.createObjectURL(file))
     setUploading(true)
     try {
@@ -127,51 +131,73 @@ function PhotoUploader({ day, meal, photoType, label, uploadedUrl, onUploaded, o
 
   return (
     <div className="flex-1 min-w-0">
-      <p className="text-xs font-medium text-gray-600 mb-1 text-center">{label}</p>
+      <p className="text-sm font-semibold text-gray-700 mb-2 text-center">{label}</p>
 
       {preview ? (
         <div className="relative">
           <img src={preview} alt={label}
-            className="w-full h-28 object-cover rounded-lg border border-gray-200" />
-          {/* 업로드 중 오버레이 */}
+            className="w-full h-36 object-cover rounded-xl border border-gray-200" />
           {uploading && (
-            <div className="absolute inset-0 bg-black/40 rounded-lg flex items-center justify-center">
-              <span className="text-white text-xs">업로드 중...</span>
+            <div className="absolute inset-0 bg-black/40 rounded-xl flex items-center justify-center">
+              <span className="text-white text-sm font-medium">업로드 중...</span>
             </div>
           )}
-          {/* 삭제 버튼 */}
           {!uploading && (
-            <button type="button" onClick={handleDelete}
-              className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full text-xs flex items-center justify-center hover:bg-red-600">
-              ✕
-            </button>
-          )}
-          {/* 재선택 */}
-          {!uploading && (
-            <button type="button" onClick={() => inputRef.current?.click()}
-              className="absolute bottom-1 right-1 bg-black/50 text-white text-xs px-1.5 py-0.5 rounded hover:bg-black/70">
-              변경
-            </button>
+            <>
+              <button type="button" onClick={handleDelete}
+                className="absolute top-2 right-2 w-7 h-7 bg-red-500 text-white rounded-full text-sm flex items-center justify-center hover:bg-red-600 shadow">
+                ✕
+              </button>
+              {/* 재촬영/재선택 버튼 */}
+              <div className="absolute bottom-2 left-0 right-0 flex gap-1 justify-center px-2">
+                <button type="button" onClick={() => cameraRef.current?.click()}
+                  className="flex-1 bg-black/60 text-white text-xs py-1 rounded-lg hover:bg-black/80">
+                  📷 재촬영
+                </button>
+                <button type="button" onClick={() => galleryRef.current?.click()}
+                  className="flex-1 bg-black/60 text-white text-xs py-1 rounded-lg hover:bg-black/80">
+                  🖼 앨범
+                </button>
+              </div>
+            </>
           )}
         </div>
       ) : (
-        <button type="button" onClick={() => inputRef.current?.click()}
-          disabled={uploading}
-          className="w-full h-28 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center gap-1 hover:border-blue-400 hover:bg-blue-50 transition-colors disabled:opacity-50">
-          {uploading
-            ? <span className="text-xs text-gray-400">업로드 중...</span>
-            : <>
+        <div className={`w-full rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 overflow-hidden ${uploading ? 'opacity-50' : ''}`}>
+          {uploading ? (
+            <div className="h-36 flex items-center justify-center">
+              <span className="text-sm text-gray-400">업로드 중...</span>
+            </div>
+          ) : (
+            <>
+              {/* 촬영 버튼 */}
+              <button type="button" onClick={() => cameraRef.current?.click()}
+                disabled={uploading}
+                className="w-full py-4 flex flex-col items-center gap-1 hover:bg-blue-50 transition-colors border-b border-gray-200">
                 <span className="text-2xl">📷</span>
-                <span className="text-xs text-gray-400">{label} 사진</span>
-                <span className="text-xs text-blue-500">탭하여 선택</span>
-              </>
-          }
-        </button>
+                <span className="text-sm font-medium text-blue-600">사진 촬영</span>
+              </button>
+              {/* 앨범 선택 버튼 */}
+              <button type="button" onClick={() => galleryRef.current?.click()}
+                disabled={uploading}
+                className="w-full py-4 flex flex-col items-center gap-1 hover:bg-green-50 transition-colors">
+                <span className="text-2xl">🖼️</span>
+                <span className="text-sm font-medium text-green-600">앨범에서 선택</span>
+              </button>
+            </>
+          )}
+        </div>
       )}
 
-      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
+      {error && <p className="text-xs text-red-500 mt-1 text-center">{error}</p>}
 
-      <input ref={inputRef} type="file" accept="image/*" capture="environment"
+      {/* 카메라 촬영 전용 input */}
+      <input ref={cameraRef} type="file" accept="image/*" capture="environment"
+        className="hidden"
+        onChange={e => handleFile(e.target.files?.[0])} />
+
+      {/* 앨범 선택 전용 input (capture 없음) */}
+      <input ref={galleryRef} type="file" accept="image/*"
         className="hidden"
         onChange={e => handleFile(e.target.files?.[0])} />
     </div>
@@ -188,8 +214,6 @@ export default function NutritionSurveyPage() {
   const [mealPortions, setMealPortions] = useState({})
   const [plateWaste, setPlateWaste] = useState({})
   const [activeDay, setActiveDay] = useState(1)
-
-  // photos: { 'day1_아침_before': { url, fileName }, 'day1_아침_after': {...}, ... }
   const [photos, setPhotos] = useState({})
 
   useEffect(() => {
@@ -244,7 +268,6 @@ export default function NutritionSurveyPage() {
     </div>
   )
 
-  // 이 일차·끼니의 사진 업로드 완료 수
   const countPhotos = (day) =>
     MEALS.reduce((n, meal) => {
       if (photos[photoKey(day, meal, 'before')]?.url) n++
@@ -252,18 +275,19 @@ export default function NutritionSurveyPage() {
       return n
     }, 0)
 
+  // 일차 탭
   const DayTabs = ({ showPhotoCount = false }) => (
-    <div className="flex gap-1.5 mb-4 flex-wrap">
+    <div className="flex gap-2 mb-4 flex-wrap">
       {DAYS.map(d => {
         const cnt = showPhotoCount ? countPhotos(d) : null
         const total = MEALS.length * 2
         return (
           <button key={d} type="button" onClick={() => setActiveDay(d)}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors relative ${
-              activeDay === d ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+              activeDay === d ? 'bg-blue-600 text-white shadow' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
             {d}일차
             {showPhotoCount && (
-              <span className={`ml-1 text-xs ${activeDay === d ? 'text-blue-100' : cnt === total ? 'text-green-600' : 'text-gray-400'}`}>
+              <span className={`ml-1.5 text-xs ${activeDay === d ? 'text-blue-100' : cnt === total ? 'text-green-600 font-bold' : 'text-gray-400'}`}>
                 {cnt}/{total}
               </span>
             )}
@@ -289,11 +313,11 @@ export default function NutritionSurveyPage() {
           <h2 className="section-title">끼니별 음식 섭취량 입력</h2>
           <InfoBox>📝 5일 동안 각 끼니에서 실제로 드신 음식의 양(g)을 입력해주세요.</InfoBox>
           <DayTabs />
-          <div className="overflow-x-auto">
-            <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${MEALS.length}, minmax(140px, 1fr))`, minWidth: `${MEALS.length * 148}px` }}>
+          <div className="overflow-x-auto -mx-2 px-2">
+            <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${MEALS.length}, minmax(130px, 1fr))`, minWidth: `${MEALS.length * 138}px` }}>
               {MEALS.map(meal => (
                 <div key={meal}>
-                  <h3 className="text-sm font-semibold text-gray-700 mb-3 text-center bg-blue-50 py-1.5 rounded-lg">{meal}</h3>
+                  <h3 className="text-sm font-semibold text-gray-700 mb-3 text-center bg-blue-50 py-2 rounded-lg">{meal}</h3>
                   {MEAL_FOODS[meal].map(food => (
                     <GramInput key={food} label={food}
                       value={getGram(activeDay, meal, food)}
@@ -306,7 +330,7 @@ export default function NutritionSurveyPage() {
         </div>
       )}
 
-      {/* ── 2페이지: 잔반량 + 사진 업로드 ── */}
+      {/* ── 2페이지: 잔반량 + 사진 ── */}
       {page === 2 && (
         <div>
           <h2 className="section-title">음식별 잔반량 + 식사 사진</h2>
@@ -316,10 +340,10 @@ export default function NutritionSurveyPage() {
           </InfoBox>
 
           {/* 잔반 범례 */}
-          <div className="flex justify-around mb-4 p-3 bg-gray-50 rounded-lg">
+          <div className="flex justify-around mb-4 p-3 bg-gray-50 rounded-xl">
             {[{l:0,t:'다 먹음'},{l:1,t:'25%'},{l:2,t:'50%'},{l:3,t:'75%'},{l:4,t:'모두'}].map(item => (
               <div key={item.l} className="text-center">
-                <WasteCircle level={item.l} size={40} />
+                <WasteCircle level={item.l} size={44} />
                 <p className="text-xs text-gray-500 mt-1">{item.t}</p>
               </div>
             ))}
@@ -328,11 +352,11 @@ export default function NutritionSurveyPage() {
           <DayTabs showPhotoCount />
 
           {MEALS.map(meal => (
-            <div key={meal} className="mb-6 border border-gray-100 rounded-xl p-3">
-              <h3 className="text-sm font-semibold text-blue-700 mb-3 border-b border-blue-100 pb-1">{meal}</h3>
+            <div key={meal} className="mb-6 border border-gray-100 rounded-2xl p-4 bg-white shadow-sm">
+              <h3 className="text-base font-bold text-blue-700 mb-4 border-b border-blue-100 pb-2">{meal}</h3>
 
-              {/* 잔반량 선택 */}
-              <div className="grid grid-cols-2 gap-2 mb-4">
+              {/* 잔반량 - 한 줄에 하나씩 (태블릿/모바일 최적화) */}
+              <div className="space-y-3 mb-5">
                 {MEAL_FOODS[meal].map(food => (
                   <WasteSelector key={food} label={food}
                     value={getWaste(activeDay, meal, food)}
@@ -340,9 +364,9 @@ export default function NutritionSurveyPage() {
                 ))}
               </div>
 
-              {/* 식전 / 식후 사진 업로드 */}
-              <div className="flex gap-3">
-                {['before','after'].map(type => (
+              {/* 식전 / 식후 사진 - 나란히 배치 */}
+              <div className="grid grid-cols-2 gap-3">
+                {['before', 'after'].map(type => (
                   <PhotoUploader
                     key={type}
                     day={activeDay}
@@ -368,30 +392,27 @@ export default function NutritionSurveyPage() {
       {page === 3 && (
         <div>
           <h2 className="section-title">최종 확인</h2>
-
-          {/* 사진 업로드 현황 요약 */}
           <div className="mb-4">
-            <p className="text-sm font-medium text-gray-700 mb-2">📸 사진 업로드 현황</p>
+            <p className="text-sm font-medium text-gray-700 mb-3">📸 사진 업로드 현황</p>
             <div className="grid grid-cols-5 gap-2">
               {DAYS.map(d => {
                 const cnt = countPhotos(d)
                 const total = MEALS.length * 2
                 const done = cnt === total
                 return (
-                  <div key={d} className={`text-center p-2 rounded-lg border ${done ? 'border-green-200 bg-green-50' : 'border-gray-200 bg-gray-50'}`}>
+                  <div key={d} className={`text-center p-3 rounded-xl border-2 ${done ? 'border-green-300 bg-green-50' : 'border-gray-200 bg-gray-50'}`}>
                     <p className="text-xs font-medium text-gray-600">{d}일차</p>
-                    <p className={`text-lg font-bold ${done ? 'text-green-600' : 'text-gray-400'}`}>{cnt}</p>
+                    <p className={`text-xl font-bold mt-1 ${done ? 'text-green-600' : 'text-gray-400'}`}>{cnt}</p>
                     <p className="text-xs text-gray-400">/{total}장</p>
                   </div>
                 )
               })}
             </div>
           </div>
-
           <Divider label="저장" />
           <InfoBox type="success">
-            ✅ 1~2페이지 입력이 완료되었습니다.<br />
-            사진을 모두 올리지 않아도 저장할 수 있습니다.
+            ✅ 사진을 모두 올리지 않아도 저장할 수 있습니다.<br/>
+            제출 버튼을 눌러 저장하세요.
           </InfoBox>
         </div>
       )}

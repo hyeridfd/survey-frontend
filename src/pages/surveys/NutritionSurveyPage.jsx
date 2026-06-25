@@ -33,25 +33,22 @@ function WasteCircle({ level, size = 40 }) {
   )
 }
 
-// ── 그램 입력 ──
+// ── 그램 입력 (한 줄: 라벨 | 숫자입력 | − | +) ──
 function GramInput({ label, value, onChange }) {
   const val = value ?? 100
   return (
-    <div className="mb-3">
-      <p className="text-xs text-gray-500 mb-1">{label} (g)</p>
-      <div className="flex items-center gap-1">
-        <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg text-center text-sm font-medium text-gray-700 py-2">
-          {Number(val).toFixed(2)}
-        </div>
-        <button type="button" onClick={() => onChange(Math.max(0, val - 10))}
-          className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg border border-gray-200 text-gray-600 font-bold text-xl">−</button>
-        <button type="button" onClick={() => onChange(val + 10)}
-          className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg border border-gray-200 text-gray-600 font-bold text-xl">+</button>
-      </div>
-      <input type="number" min={0} step={1} value={val}
+    <div className="flex items-center gap-2 py-2.5 border-b border-gray-100 last:border-0">
+      <span className="text-sm text-gray-700 w-16 shrink-0 font-medium">{label}</span>
+      <input
+        type="number" min={0} step={1} value={val}
         onChange={e => onChange(Number(e.target.value) || 0)}
-        className="mt-1 w-full text-xs border border-gray-200 rounded px-2 py-1.5 text-gray-500 bg-white"
-        placeholder="직접 입력" />
+        className="flex-1 min-w-0 border border-gray-300 rounded-lg px-2 py-2 text-sm text-center font-medium text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+      />
+      <span className="text-xs text-gray-400 shrink-0">g</span>
+      <button type="button" onClick={() => onChange(Math.max(0, val - 10))}
+        className="w-9 h-9 shrink-0 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg border border-gray-200 text-gray-600 font-bold text-lg">−</button>
+      <button type="button" onClick={() => onChange(val + 10)}
+        className="w-9 h-9 shrink-0 flex items-center justify-center bg-blue-100 hover:bg-blue-200 rounded-lg border border-blue-200 text-blue-700 font-bold text-lg">+</button>
     </div>
   )
 }
@@ -214,6 +211,7 @@ export default function NutritionSurveyPage() {
   const [mealPortions, setMealPortions] = useState({})
   const [plateWaste, setPlateWaste] = useState({})
   const [activeDay, setActiveDay] = useState(1)
+  const [activeMeal, setActiveMeal] = useState('아침')
   const [photos, setPhotos] = useState({})
 
   useEffect(() => {
@@ -241,7 +239,7 @@ export default function NutritionSurveyPage() {
     setPlateWaste(prev => ({ ...prev, [`day${day}`]: { ...(prev[`day${day}`] || {}), [meal]: { ...(prev[`day${day}`]?.[meal] || {}), [food]: val } } }))
 
   const handleNext = async () => {
-    if (page < TOTAL_PAGES) { setPage(p => p + 1); setActiveDay(1); window.scrollTo(0, 0) }
+    if (page < TOTAL_PAGES) { setPage(p => p + 1); setActiveDay(1); setActiveMeal('아침'); window.scrollTo(0, 0) }
     else await handleSubmit()
   }
 
@@ -312,20 +310,29 @@ export default function NutritionSurveyPage() {
         <div>
           <h2 className="section-title">끼니별 음식 섭취량 입력</h2>
           <InfoBox>📝 5일 동안 각 끼니에서 실제로 드신 음식의 양(g)을 입력해주세요.</InfoBox>
+
+          {/* 일차 탭 */}
           <DayTabs />
-          <div className="overflow-x-auto -mx-2 px-2">
-            <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${MEALS.length}, minmax(130px, 1fr))`, minWidth: `${MEALS.length * 138}px` }}>
-              {MEALS.map(meal => (
-                <div key={meal}>
-                  <h3 className="text-sm font-semibold text-gray-700 mb-3 text-center bg-blue-50 py-2 rounded-lg">{meal}</h3>
-                  {MEAL_FOODS[meal].map(food => (
-                    <GramInput key={food} label={food}
-                      value={getGram(activeDay, meal, food)}
-                      onChange={v => setGram(activeDay, meal, food, v)} />
-                  ))}
-                </div>
-              ))}
-            </div>
+
+          {/* 끼니 탭 */}
+          <div className="flex gap-1.5 mb-4 flex-wrap">
+            {MEALS.map(meal => (
+              <button key={meal} type="button"
+                onClick={() => setActiveMeal(meal)}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  activeMeal === meal ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}>{meal}</button>
+            ))}
+          </div>
+
+          {/* 선택된 끼니의 음식 목록 - 세로로 한 페이지에 */}
+          <div className="bg-gray-50 rounded-xl px-4 py-2">
+            <p className="text-xs text-gray-400 mb-1 pt-2">{activeDay}일차 · {activeMeal}</p>
+            {MEAL_FOODS[activeMeal].map(food => (
+              <GramInput key={food} label={food}
+                value={getGram(activeDay, activeMeal, food)}
+                onChange={v => setGram(activeDay, activeMeal, food, v)} />
+            ))}
           </div>
         </div>
       )}

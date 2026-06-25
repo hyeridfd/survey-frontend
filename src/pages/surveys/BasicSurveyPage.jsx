@@ -315,20 +315,133 @@ export default function BasicSurveyPage() {
       )}
 
       {/* ── 6페이지: MNA-SF ── */}
-      {page === 6 && (
-        <div>
-          <h2 className="section-title">영양 상태 평가 (MNA-SF)</h2>
-          <SelectField label="A. 지난 3개월간 식욕 감소로 식사량이 줄었습니까?" options={[{value:'0',label:'0: 심하게 줄었음'},{value:'1',label:'1: 보통으로 줄었음'},{value:'2',label:'2: 변화 없음'}]} value={data.mna_appetite_change} onChange={v => update({mna_appetite_change:v})} />
-          <SelectField label="B. 지난 3개월간 체중이 감소하였습니까?" options={[{value:'0',label:'0: 3kg 이상 감소'},{value:'1',label:'1: 모름'},{value:'2',label:'2: 1~3kg 감소'},{value:'3',label:'3: 변화 없음'}]} value={data.mna_weight_change} onChange={v => update({mna_weight_change:v})} />
-          <SelectField label="C. 운동 가능 여부" options={[{value:'0',label:'0: 침대·의자 생활'},{value:'1',label:'1: 침대·의자에서 일어나나 외출 안 함'},{value:'2',label:'2: 외출 가능'}]} value={data.mna_mobility} onChange={v => update({mna_mobility:v})} />
-          <SelectField label="D. 지난 3개월간 심리적 스트레스나 급성 질환을 앓았습니까?" options={[{value:'0',label:'0: 예'},{value:'2',label:'2: 아니오'}]} value={data.mna_stress_illness} onChange={v => update({mna_stress_illness:v})} />
-          <SelectField label="E. 신경·정신적 문제" options={[{value:'0',label:'0: 중증 치매 또는 우울증'},{value:'1',label:'1: 경증 치매'},{value:'2',label:'2: 없음'}]} value={data.mna_neuropsychological_problem} onChange={v => update({mna_neuropsychological_problem:v})} />
-          <SelectField label="F. BMI 범주" options={[{value:'0',label:'0: BMI < 19'},{value:'1',label:'1: 19 ≤ BMI < 21'},{value:'2',label:'2: 21 ≤ BMI < 23'},{value:'3',label:'3: BMI ≥ 23'}]} value={data.mna_bmi_category} onChange={v => update({mna_bmi_category:v})} />
-          <InfoBox type={mnaScore >= 12 ? 'success' : mnaScore >= 8 ? 'warning' : 'info'}>
-            MNA-SF 총점: <strong>{mnaScore}/14</strong> — {mnaScore >= 12 ? '정상 영양상태' : mnaScore >= 8 ? '영양불량 위험' : '영양불량'}
-          </InfoBox>
-        </div>
-      )}
+      {page === 6 && (() => {
+        // BMI 자동 계산
+        const h = data.height, w = data.weight
+        const autoBmi = h && w && h > 0 ? w / Math.pow(h / 100, 2) : null
+        let autoBmiScore = null
+        let autoBmiLabel = ''
+        if (autoBmi) {
+          if (autoBmi < 19)       { autoBmiScore = 0; autoBmiLabel = `BMI < 19 (현재: ${autoBmi.toFixed(2)})` }
+          else if (autoBmi < 21)  { autoBmiScore = 1; autoBmiLabel = `19 ≤ BMI < 21 (현재: ${autoBmi.toFixed(2)})` }
+          else if (autoBmi < 23)  { autoBmiScore = 2; autoBmiLabel = `21 ≤ BMI < 23 (현재: ${autoBmi.toFixed(2)})` }
+          else                    { autoBmiScore = 3; autoBmiLabel = `BMI ≥ 23 (현재: ${autoBmi.toFixed(2)})` }
+          // BMI 자동 반영
+          if (data.mna_bmi_category === undefined || data.mna_bmi_category === null) {
+            update({ mna_bmi_category: String(autoBmiScore) })
+          }
+        }
+
+        // 점수 계산 (Streamlit과 동일)
+        const aScore = Number(data.mna_appetite_change ?? 2)
+        const wScore = Number(data.mna_weight_change ?? 3)
+        const mScore = Number(data.mna_mobility ?? 2)
+        const sScore = Number(data.mna_stress_illness ?? 2)
+        const nScore = Number(data.mna_neuropsychological_problem ?? 2)
+        const bScore = autoBmi !== null ? autoBmiScore : Number(data.mna_bmi_category ?? 3)
+        const totalMnaScore = aScore + wScore + mScore + sScore + nScore + bScore
+
+        return (
+          <div>
+            <h2 className="section-title">영양 상태 평가 (MNA-SF)</h2>
+            <InfoBox>📝 간이 영양 평가 (Mini Nutritional Assessment - Short Form)</InfoBox>
+
+            {autoBmi && (
+              <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-2.5 mb-4 text-sm text-blue-800">
+                📊 기초 조사표 기준 BMI: <strong>{autoBmi.toFixed(2)} kg/m²</strong>
+              </div>
+            )}
+
+            {/* A */}
+            <div className="mb-5">
+              <p className="font-semibold text-gray-800 mb-3">A. 지난 3개월 동안 밥맛이 없거나, 소화가 잘 안되거나, 씹고 삼키는 것이 어려워서 식사량이 줄었습니까?</p>
+              <RadioGroup label="" options={[
+                {value:'0', label:'많이 줄었다'},
+                {value:'1', label:'조금 줄었다'},
+                {value:'2', label:'변화 없다'},
+              ]} value={String(data.mna_appetite_change ?? '')} onChange={v => update({mna_appetite_change: v})} />
+            </div>
+
+            {/* B */}
+            <div className="mb-5">
+              <p className="font-semibold text-gray-800 mb-3">B. 지난 3개월 동안 몸무게가 줄었습니까?</p>
+              <RadioGroup label="" options={[
+                {value:'0', label:'3kg 이상 감소'},
+                {value:'1', label:'모르겠다'},
+                {value:'2', label:'1kg~3kg 감소'},
+                {value:'3', label:'변화 없다'},
+              ]} value={String(data.mna_weight_change ?? '')} onChange={v => update({mna_weight_change: v})} />
+            </div>
+
+            {/* C */}
+            <div className="mb-5">
+              <p className="font-semibold text-gray-800 mb-3">C. 거동 능력</p>
+              <RadioGroup label="" options={[
+                {value:'0', label:'외출 불가, 침대나 의자에서만 생활 가능'},
+                {value:'1', label:'외출 불가, 집에서만 활동 가능'},
+                {value:'2', label:'외출 가능, 활동 제약 없음'},
+              ]} value={String(data.mna_mobility ?? '')} onChange={v => update({mna_mobility: v})} />
+            </div>
+
+            {/* D */}
+            <div className="mb-5">
+              <p className="font-semibold text-gray-800 mb-3">D. 지난 3개월 동안 정신적 스트레스를 경험했거나 급성 질환을 앓았던 적이 있습니까?</p>
+              <RadioGroup label="" options={[
+                {value:'0', label:'예'},
+                {value:'2', label:'아니오'},
+              ]} value={String(data.mna_stress_illness ?? '')} onChange={v => update({mna_stress_illness: v})} />
+            </div>
+
+            {/* E */}
+            <div className="mb-5">
+              <p className="font-semibold text-gray-800 mb-3">E. 신경 정신과적 문제</p>
+              <RadioGroup label="" options={[
+                {value:'0', label:'중증 치매나 우울증'},
+                {value:'1', label:'경증 치매'},
+                {value:'2', label:'없음'},
+              ]} value={String(data.mna_neuropsychological_problem ?? '')} onChange={v => update({mna_neuropsychological_problem: v})} />
+            </div>
+
+            {/* F - BMI 자동 or 수동 */}
+            <div className="mb-5">
+              <p className="font-semibold text-gray-800 mb-3">F. 체질량지수 (BMI = kg / m²)</p>
+              {autoBmi ? (
+                <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 text-sm text-blue-800">
+                  📊 자동 산출: <strong>{autoBmiLabel}</strong> → 점수: {autoBmiScore}점
+                </div>
+              ) : (
+                <RadioGroup label="" options={[
+                  {value:'0', label:'BMI < 19'},
+                  {value:'1', label:'19 ≤ BMI < 21'},
+                  {value:'2', label:'21 ≤ BMI < 23'},
+                  {value:'3', label:'BMI ≥ 23'},
+                ]} value={String(data.mna_bmi_category ?? '')} onChange={v => update({mna_bmi_category: v})} />
+              )}
+            </div>
+
+            {/* 결과 */}
+            <div className="border-t border-gray-200 pt-4 mt-2">
+              <p className="text-sm font-semibold text-gray-700 mb-3">📊 MNA-SF 결과</p>
+              <div className="grid grid-cols-2 gap-3 mb-3">
+                <div className="bg-gray-50 rounded-xl p-3 text-center">
+                  <p className="text-xs text-gray-500">총점</p>
+                  <p className="text-2xl font-bold text-blue-700 mt-1">{totalMnaScore}<span className="text-sm text-gray-400"> / 14점</span></p>
+                </div>
+                <div className={`rounded-xl p-3 text-center ${totalMnaScore >= 12 ? 'bg-green-50' : totalMnaScore >= 8 ? 'bg-yellow-50' : 'bg-red-50'}`}>
+                  <p className="text-xs text-gray-500">영양 상태</p>
+                  <p className={`text-sm font-bold mt-1 ${totalMnaScore >= 12 ? 'text-green-700' : totalMnaScore >= 8 ? 'text-yellow-700' : 'text-red-700'}`}>
+                    {totalMnaScore >= 12 ? '정상 영양 상태' : totalMnaScore >= 8 ? '영양불량 위험' : '영양불량'}
+                  </p>
+                </div>
+              </div>
+              <div className="bg-gray-50 rounded-xl px-4 py-3 text-xs text-gray-600 leading-relaxed">
+                <strong>해석 기준:</strong><br/>
+                12~14점: 정상 영양 상태 &nbsp;|&nbsp; 8~11점: 영양불량 위험 &nbsp;|&nbsp; 0~7점: 영양불량
+              </div>
+            </div>
+          </div>
+        )
+      })()}
 
       {/* ── 7페이지: K-MBI ── */}
       {page === 7 && (

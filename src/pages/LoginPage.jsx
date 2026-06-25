@@ -62,28 +62,27 @@ export default function LoginPage() {
       <div className="flex-1 flex flex-col items-center justify-center px-5 pt-12 pb-6">
 
         {/* 로고 + 타이틀 */}
-        <div className="text-center mb-8">
-          {/* 아이콘 뱃지 */}
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-5 shadow-lg"
-            style={{ background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.25)' }}>
-            <span style={{ fontSize: '40px' }}>🐟</span>
-          </div>
-
+        <div className="text-center mb-6">
           {/* 메인 타이틀 */}
-          <h1 className="text-3xl font-bold text-white tracking-tight leading-tight mb-2">
-            요양원 건강 및<br />블루푸드 설문조사
+          <h1 className="text-2xl font-bold text-white tracking-tight leading-snug mb-3">
+            요양원 입소 고령자<br />건강 프로파일 분석 및<br />선호도 조사
           </h1>
-
-          {/* 배지 */}
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mt-2"
-            style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)' }}>
-            <span className="w-1.5 h-1.5 rounded-full bg-green-300 animate-pulse inline-block"></span>
-            <span className="text-xs text-blue-100 font-medium">Pilot Test</span>
-          </div>
+          <div className="w-12 h-0.5 mx-auto rounded-full" style={{ background: 'rgba(255,255,255,0.4)' }}></div>
         </div>
 
         {/* 로그인 카드 */}
         <div className="w-full max-w-sm">
+          {/* 설문 이미지 */}
+          <div className="rounded-2xl overflow-hidden mb-4 shadow-xl"
+            style={{ border: '1px solid rgba(255,255,255,0.2)' }}>
+            <img
+              src="https://fmrxrvqccphjrsxpkwof.supabase.co/storage/v1/object/public/assets/login.png"
+              alt="설문조사 현장"
+              className="w-full object-cover"
+              style={{ height: '180px', objectPosition: 'center 30%' }}
+            />
+          </div>
+
           <div className="rounded-3xl p-6 shadow-2xl"
             style={{ background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(20px)' }}>
 
@@ -182,7 +181,7 @@ export default function LoginPage() {
       {/* 하단 정보 */}
       <div className="text-center pb-8 px-4">
         <p className="text-xs text-blue-200 leading-relaxed">
-          서울대학교 정밀식의약솔루션 연구실<br />
+          서울대학교 농생명공학부<br />
           글로벌 블루푸드 미래리더 양성 프로젝트
         </p>
       </div>

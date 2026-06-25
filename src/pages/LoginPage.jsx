@@ -54,9 +54,16 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{
-      background: 'linear-gradient(160deg, #0a2e6e 0%, #1151b8 45%, #2979d4 75%, #4facfe 100%)'
+    <div className="min-h-screen flex flex-col relative" style={{
+      backgroundImage: 'url(https://fmrxrvqccphjrsxpkwof.supabase.co/storage/v1/object/public/assets/login.png)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center 30%',
     }}>
+      {/* 그라데이션 오버레이 */}
+      <div className="absolute inset-0" style={{
+        background: 'linear-gradient(160deg, rgba(10,46,110,0.88) 0%, rgba(17,81,184,0.82) 40%, rgba(41,121,212,0.78) 70%, rgba(79,172,254,0.72) 100%)'
+      }} />
+      <div className="relative z-10 flex flex-col min-h-screen">
 
       {/* 상단 헤더 영역 */}
       <div className="flex-1 flex flex-col items-center justify-center px-5 pt-12 pb-6">
@@ -72,17 +79,6 @@ export default function LoginPage() {
 
         {/* 로그인 카드 */}
         <div className="w-full max-w-sm">
-          {/* 설문 이미지 */}
-          <div className="rounded-2xl overflow-hidden mb-4 shadow-xl"
-            style={{ border: '1px solid rgba(255,255,255,0.2)' }}>
-            <img
-              src="https://fmrxrvqccphjrsxpkwof.supabase.co/storage/v1/object/public/assets/login.png"
-              alt="설문조사 현장"
-              className="w-full object-cover"
-              style={{ height: '180px', objectPosition: 'center 30%' }}
-            />
-          </div>
-
           <div className="rounded-3xl p-6 shadow-2xl"
             style={{ background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(20px)' }}>
 
@@ -184,6 +180,7 @@ export default function LoginPage() {
           서울대학교 농생명공학부<br />
           글로벌 블루푸드 미래리더 양성 프로젝트
         </p>
+      </div>
       </div>
     </div>
   )

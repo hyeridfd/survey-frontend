@@ -19,19 +19,21 @@ const MEDICATION_OPTIONS = [
   '신장약','간약','위장약','철분제','치매약','파킨슨약','항우울제','기타'
 ]
 
-// K-MBI 항목 설정
+// K-MBI 항목 설정 (Streamlit과 동일)
+const KMBI_OPTIONS_BASE = ['과제를 수행할 수 없는 경우','최대의 도움이 필요한 경우','중등도의 도움이 필요한 경우','최소한의 도움이 필요하거나 감시가 필요한 경우','완전히 독립적인 경우']
+const KMBI_OPTIONS_NA = ['해당 사항 없음',...KMBI_OPTIONS_BASE]
 const KMBI_ITEMS = [
-  { id: 'kmbi_1', label: '개인위생', options: ['0: 도움 필요','5: 독립적 수행'] },
-  { id: 'kmbi_2', label: '목욕하기', options: ['0: 도움 필요','5: 독립적 수행'] },
-  { id: 'kmbi_3', label: '식사하기', options: ['0: 완전 도움','5: 부분 도움','10: 독립적'] },
-  { id: 'kmbi_4', label: '용변처리', options: ['0: 완전 도움','5: 부분 도움','10: 독립적'] },
-  { id: 'kmbi_5', label: '계단 오르기', options: ['0: 불가능','5: 부분 도움','10: 독립적'] },
-  { id: 'kmbi_6', label: '옷 입기', options: ['0: 완전 도움','5: 부분 도움','10: 독립적'] },
-  { id: 'kmbi_7', label: '대변 조절', options: ['0: 실금','5: 가끔 실금','10: 완전 조절'] },
-  { id: 'kmbi_8', label: '소변 조절', options: ['0: 실금','5: 가끔 실금','10: 완전 조절'] },
-  { id: 'kmbi_9', label: '의자/침대 이동', options: ['0: 불가능','5: 최대 도움','10: 최소 도움','15: 독립적'] },
-  { id: 'kmbi_10', label: '보행', options: ['0: 불가능','5: 휠체어','10: 1인 도움','15: 독립적'] },
-  { id: 'kmbi_11', label: '휠체어 이동', options: ['0: 불가능','5: 부분 도움','10: 독립적'] },
+  { id:'kmbi_1', label:'개인위생', desc:'세수, 머리 빗기, 칫솔질, 면도 등', options:KMBI_OPTIONS_BASE, scores:[0,1,3,4,5] },
+  { id:'kmbi_2', label:'목욕하기', desc:'목욕 또는 샤워', options:KMBI_OPTIONS_BASE, scores:[0,1,3,4,5] },
+  { id:'kmbi_3', label:'식사하기', desc:'음식을 먹는 동작', options:KMBI_OPTIONS_BASE, scores:[0,2,5,8,10] },
+  { id:'kmbi_4', label:'용변처리', desc:'화장실 사용 및 뒤처리', options:KMBI_OPTIONS_BASE, scores:[0,2,5,8,10] },
+  { id:'kmbi_5', label:'계단 오르기', desc:'계단 오르고 내리기', options:KMBI_OPTIONS_BASE, scores:[0,2,5,8,10] },
+  { id:'kmbi_6', label:'옷 입기', desc:'옷과 신발 착용', options:KMBI_OPTIONS_BASE, scores:[0,2,5,8,10] },
+  { id:'kmbi_7', label:'대변조절', desc:'대변 조절 능력', options:KMBI_OPTIONS_BASE, scores:[0,2,5,8,10] },
+  { id:'kmbi_8', label:'소변조절', desc:'소변 조절 능력', options:KMBI_OPTIONS_BASE, scores:[0,2,5,8,10] },
+  { id:'kmbi_9', label:'보행', desc:'실내외 이동', isWalk:true, options:KMBI_OPTIONS_NA, scores:[0,0,3,8,12,15] },
+  { id:'kmbi_10', label:'의자차(휠체어)', desc:'휠체어 사용', isWheelchair:true, options:KMBI_OPTIONS_NA, scores:[0,0,1,3,4,5] },
+  { id:'kmbi_11', label:'의자/침대 이동', desc:'의자나 침대로의 이동', options:KMBI_OPTIONS_BASE, scores:[0,3,8,12,15] },
 ]
 
 // MMSE 항목
@@ -130,11 +132,23 @@ export default function BasicSurveyPage() {
       ? '중간 수준의 신체 활동 (Moderate)'
       : '낮은 신체 활동 (Low)'
 
-  // K-MBI 점수
-  const kmbiScore = KMBI_ITEMS.reduce((sum, item) => {
-    const v = data[item.id]
-    return sum + (v ? parseInt(v) : 0)
-  }, 0)
+  // K-MBI 점수 (Streamlit과 동일 - 보행/의자차 중 하나만 반영, 인덱스로 저장)
+  const getKmbiScore = (itemId) => {
+    const item = KMBI_ITEMS.find(i => i.id === itemId)
+    if (!item) return 0
+    const idx = data[itemId]
+    if (idx === undefined || idx === null || idx === '') return 0
+    return item.scores[Number(idx)] ?? 0
+  }
+  const walkScore = getKmbiScore('kmbi_9')
+  const wheelScore = getKmbiScore('kmbi_10')
+  const baseScore = KMBI_ITEMS.filter(i => i.id !== 'kmbi_9' && i.id !== 'kmbi_10').reduce((s, item) => s + getKmbiScore(item.id), 0)
+  const kmbiScore = walkScore > 0 ? baseScore + walkScore : wheelScore > 0 ? baseScore + wheelScore : baseScore
+  const kmbiMaxScore = walkScore > 0 ? 100 : wheelScore > 0 ? 90 : 100
+  const mobilityType = walkScore > 0 ? '보행' : wheelScore > 0 ? '의자차(휠체어)' : '미선택'
+  const kmbiPct = kmbiMaxScore > 0 ? (kmbiScore / kmbiMaxScore * 100) : 0
+  const kmbiStatusArr = kmbiPct >= 91 ? ['최소 의존(minimal)', '🟢'] : kmbiPct >= 75 ? ['경도 의존(mild)', '🟡'] : kmbiPct >= 50 ? ['중간 의존(moderate)', '🟠'] : kmbiPct >= 25 ? ['대부분 의존(substantial)', '🔴'] : ['완전 의존(full)', '⚫']
+  const [kmbiStatus, kmbiEmoji] = kmbiStatusArr
 
   // MMSE 점수
   const mmseScore = MMSE_ITEMS.reduce((sum, item) => sum + (data[item.key] ? 1 : 0), 0)
@@ -446,19 +460,73 @@ export default function BasicSurveyPage() {
       {/* ── 7페이지: K-MBI ── */}
       {page === 7 && (
         <div>
-          <h2 className="section-title">일상생활 수행능력 (K-MBI)</h2>
-          <div className="space-y-3">
-            {KMBI_ITEMS.map(item => (
-              <SelectField
-                key={item.id}
-                label={item.label}
-                options={item.options.map(o => ({ value: o.split(':')[0].trim(), label: o }))}
-                value={data[item.id]}
-                onChange={v => update({ [item.id]: v })}
-              />
-            ))}
+          <h2 className="section-title">K-MBI (한국판 수정 바델 지수)</h2>
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 mb-4 text-sm text-blue-800">
+            <p className="font-semibold mb-1">K-MBI 평가 안내</p>
+            <p>각 항목에 대해 대상자의 현재 수행 능력을 평가해주세요.</p>
+            <p className="mt-1.5 font-medium">⚠️ 보행과 의자차(휠체어)는 둘 중 하나만 선택합니다.<br/>
+            보행 가능: 보행 점수 적용 (100점 만점) / 휠체어: 의자차 점수 적용 (90점 만점)</p>
           </div>
-          <InfoBox type="success">K-MBI 총점: <strong>{kmbiScore} / 100점</strong></InfoBox>
+
+          <div className="space-y-4">
+            {KMBI_ITEMS.map((item, idx) => {
+              const curIdx = data[item.id] !== undefined && data[item.id] !== null && data[item.id] !== ''
+                ? Number(data[item.id]) : null
+              return (
+                <div key={item.id} className="border border-gray-200 rounded-xl p-4">
+                  <p className="font-semibold text-gray-800 mb-0.5">{idx+1}. {item.label}</p>
+                  <p className="text-xs text-gray-400 mb-3">📌 {item.desc}</p>
+                  {(item.isWalk || item.isWheelchair) && (
+                    <p className="text-xs text-yellow-700 bg-yellow-50 border border-yellow-200 rounded-lg px-3 py-1.5 mb-3">
+                      ⚠️ 보행과 의자차(휠체어) 중 하나만 선택하세요. 다른 하나는 '해당 사항 없음'으로 선택합니다.
+                    </p>
+                  )}
+                  <div className="space-y-2">
+                    {item.options.map((opt, optIdx) => {
+                      const score = item.scores[optIdx]
+                      return (
+                        <label key={optIdx} className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                          <input
+                            type="radio"
+                            name={item.id}
+                            checked={curIdx === optIdx}
+                            onChange={() => update({ [item.id]: optIdx })}
+                            className="accent-blue-600 w-4 h-4 shrink-0"
+                          />
+                          <span className="text-sm text-gray-700 flex-1">{opt}</span>
+                          <span className="text-xs text-blue-600 font-medium shrink-0">{score}점</span>
+                        </label>
+                      )
+                    })}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* 결과 */}
+          <div className="mt-5 bg-blue-50 border border-blue-200 rounded-xl p-4">
+            <p className="text-sm font-semibold text-blue-800 mb-3">📊 K-MBI 평가 결과</p>
+            <div className="grid grid-cols-3 gap-2 mb-3">
+              <div className="bg-white rounded-lg p-3 text-center">
+                <p className="text-xs text-gray-500">총점</p>
+                <p className="text-xl font-bold text-blue-700 mt-1">{kmbiScore}<span className="text-xs text-gray-400">/{kmbiMaxScore}점</span></p>
+              </div>
+              <div className="bg-white rounded-lg p-3 text-center">
+                <p className="text-xs text-gray-500">이동 수단</p>
+                <p className="text-sm font-bold text-gray-700 mt-1">{mobilityType}</p>
+              </div>
+              <div className="bg-white rounded-lg p-3 text-center">
+                <p className="text-xs text-gray-500">도움의 수준</p>
+                <p className="text-sm font-bold text-gray-700 mt-1">{kmbiEmoji} {kmbiStatus}</p>
+              </div>
+            </div>
+            <div className="bg-white rounded-lg px-4 py-3 text-xs text-gray-600 leading-relaxed">
+              <strong>해석 기준:</strong><br/>
+              0~24점: 완전 의존 · 25~49점: 대부분 의존 · 50~74점: 중간 의존 · 75~90점: 경도 의존 · 91~99점: 최소 의존<br/>
+              <strong className="text-blue-700">현재: {kmbiScore}/{kmbiMaxScore}점 ({kmbiPct.toFixed(1)}%) - {kmbiStatus} / 이동방식: {mobilityType}</strong>
+            </div>
+          </div>
         </div>
       )}
 

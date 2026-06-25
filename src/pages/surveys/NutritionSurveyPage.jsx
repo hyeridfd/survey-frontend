@@ -308,8 +308,8 @@ export default function NutritionSurveyPage() {
       {/* ── 1페이지: 섭취량 ── */}
       {page === 1 && (
         <div>
-          <h2 className="section-title">끼니별 음식 섭취량 입력</h2>
-          <InfoBox>📝 5일 동안 각 끼니에서 실제로 드신 음식의 양(g)을 입력해주세요.</InfoBox>
+          <h2 className="section-title">끼니별 음식 배식량 입력</h2>
+          <InfoBox>📝 5일 동안 각 끼니에서 제공한 음식의 무게(g)를 입력해주세요.</InfoBox>
 
           {/* 일차 탭 */}
           <DayTabs />
@@ -418,8 +418,7 @@ export default function NutritionSurveyPage() {
           </div>
           <Divider label="저장" />
           <InfoBox type="success">
-            ✅ 사진을 모두 올리지 않아도 저장할 수 있습니다.<br/>
-            제출 버튼을 눌러 저장하세요.
+            ✅ 제출 버튼을 눌러 저장하세요.<br/>
           </InfoBox>
         </div>
       )}

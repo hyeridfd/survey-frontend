@@ -11,12 +11,6 @@ const SCALE_LABELS_AMOUNT = ['매우 부족', '부족', '적당', '많음', '매
 const SCALE_LABELS_EASE = ['매우 어려움', '어려움', '보통', '쉬움', '매우 쉬움']
 const SCALE_LABELS_REPURCHASE = ['매우 낮음', '낮음', '보통', '높음', '매우 높음']
 
-const PRODUCTS = [
-  { prefix: 'product_1', name: '오쉐프 간편 고등어구이' },
-  { prefix: 'product_2', name: '정옥 재첩국' },
-  { prefix: 'product_3', name: '해물동그랑땡조림' },
-]
-
 const FOOD_GROUPS = ['밥·죽류','국·찌개류','고기류','생선·해산물류','채소·나물류','두부·콩류','채소류','과일','기타']
 const COOKING_METHODS = ['찌기','삶기','굽기','볶기','튀기기','조림','무침','국/탕/찌개','생식 (회, 샐러드 등)']
 const SEAFOOD_TYPES = ['고등어','갈치','명태/동태','조기','삼치','참치','오징어','낙지','새우','조개류','기타']
@@ -177,80 +171,6 @@ export default function SatisfactionSurveyPage() {
               placeholder="개선되었으면 하는 점을 자유롭게 작성해주세요."
             />
           </div>
-        </div>
-      )}
-
-      {/* ── 3페이지: 고령친화우수식품 평가 ── */}
-      {page === 3 && (
-        <div>
-          <h2 className="section-title">고령친화우수식품 평가</h2>
-          <InfoBox>📝 다음 3가지 제품을 시식하고 평가해주세요.</InfoBox>
-
-          {PRODUCTS.map((product, i) => {
-            const p = data
-            const avg = [
-              p[`${product.prefix}_taste`],
-              p[`${product.prefix}_chewing`],
-              p[`${product.prefix}_swallowing`],
-              p[`${product.prefix}_satisfaction`],
-              p[`${product.prefix}_repurchase`],
-            ].filter(Boolean)
-            const avgScore = avg.length ? (avg.reduce((a,b) => a+b, 0) / avg.length).toFixed(1) : null
-
-            return (
-              <div key={product.prefix} className="mb-6 border border-blue-100 rounded-xl overflow-hidden">
-                <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-3">
-                  <p className="text-white font-semibold">제품 {i+1}: {product.name}</p>
-                  {avgScore && (
-                    <p className="text-blue-100 text-sm">평균 평점: {avgScore}점</p>
-                  )}
-                </div>
-                <div className="p-4 space-y-4">
-                  <ScaleQuestion label="맛은 어떠십니까?" value={p[`${product.prefix}_taste`]} onChange={v => update({[`${product.prefix}_taste`]: v})} labels={SCALE_LABELS_SATISFACTION} />
-                  <ScaleQuestion label="씹기는 어떠십니까?" value={p[`${product.prefix}_chewing`]} onChange={v => update({[`${product.prefix}_chewing`]: v})} labels={SCALE_LABELS_EASE} />
-                  <ScaleQuestion label="삼키기는 어떠십니까?" value={p[`${product.prefix}_swallowing`]} onChange={v => update({[`${product.prefix}_swallowing`]: v})} labels={SCALE_LABELS_EASE} />
-                  <ScaleQuestion label="전반적으로 만족하십니까?" value={p[`${product.prefix}_satisfaction`]} onChange={v => update({[`${product.prefix}_satisfaction`]: v})} labels={SCALE_LABELS_SATISFACTION} />
-                  <ScaleQuestion label="또 드시고 싶으십니까?" value={p[`${product.prefix}_repurchase`]} onChange={v => update({[`${product.prefix}_repurchase`]: v})} labels={SCALE_LABELS_REPURCHASE} />
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      )}
-
-      {/* ── 4페이지: 종합 평가 ── */}
-      {page === 4 && (
-        <div>
-          <h2 className="section-title">종합 평가</h2>
-
-          <ScaleQuestion
-            label="1. 시식한 고령친화우수식품에 전반적으로 얼마나 만족하십니까?"
-            value={data.overall_product_satisfaction}
-            onChange={v => update({ overall_product_satisfaction: v })}
-            labels={SCALE_LABELS_SATISFACTION}
-          />
-
-          <Divider />
-
-          <CheckboxGroup
-            label="2. 원하는 수산물 조리 형태 (복수 선택)"
-            options={COOKING_TYPES}
-            value={data.desired_cooking_types || []}
-            onChange={v => update({ desired_cooking_types: v })}
-          />
-
-          <Divider />
-
-          <CheckboxGroup
-            label="3. 원하는 수산물 종류 (복수 선택)"
-            options={SEAFOOD_TYPES}
-            value={data.desired_seafood_types || []}
-            onChange={v => update({ desired_seafood_types: v })}
-          />
-
-          <InfoBox type="success">
-            ✅ 모든 항목을 확인했습니다. 제출 버튼을 눌러 저장하세요.
-          </InfoBox>
         </div>
       )}
     </SurveyLayout>

@@ -4,7 +4,7 @@ import api from '../../lib/api'
 import SurveyLayout from '../../components/layout/SurveyLayout'
 import { RadioGroup, CheckboxGroup, InfoBox, Divider, ScaleRating } from '../../components/FormFields'
 
-const TOTAL_PAGES = 4
+const TOTAL_PAGES = 2
 
 const SCALE_LABELS_SATISFACTION = ['매우 불만족', '불만족', '보통', '만족', '매우 만족']
 const SCALE_LABELS_AMOUNT = ['매우 부족', '부족', '적당', '많음', '매우 많음']

@@ -116,7 +116,19 @@ export default function BasicSurveyPage() {
     (data.moderate_activity_days || 0) * (data.moderate_activity_time || 0) * 4.0 +
     (data.walking_days || 0) * (data.walking_time || 0) * 3.3
   )
-  const activityLevel = totalMet >= 3000 ? '높은 신체 활동 (High)' : totalMet >= 600 ? '중간 수준 (Moderate)' : '낮은 신체 활동 (Low)'
+  // Streamlit과 동일한 IPAQ-SF 분류 기준
+  const vDays = data.vigorous_activity_days || 0
+  const vTime = data.vigorous_activity_time || 0
+  const mDays = data.moderate_activity_days || 0
+  const wDays = data.walking_days || 0
+  const totalVigorousMet = vDays * vTime * 8.0
+  const totalModerateMet = (data.moderate_activity_days||0) * (data.moderate_activity_time||0) * 4.0
+  const activityLevel =
+    (totalMet >= 3000 || (vDays >= 3 && totalVigorousMet >= 1500))
+      ? '높은 신체 활동 (High)'
+      : (totalMet >= 600 || vDays >= 3 || (mDays + wDays >= 5 && totalModerateMet + (data.walking_days||0)*(data.walking_time||0)*3.3 >= 600))
+      ? '중간 수준의 신체 활동 (Moderate)'
+      : '낮은 신체 활동 (Low)'
 
   // K-MBI 점수
   const kmbiScore = KMBI_ITEMS.reduce((sum, item) => {
@@ -203,31 +215,102 @@ export default function BasicSurveyPage() {
           <h2 className="section-title">신체 활동 수준 조사 (IPAQ-SF)</h2>
           <InfoBox>📝 지난 7일 동안의 신체 활동에 대해 응답해주세요.</InfoBox>
 
-          <p className="font-medium text-gray-700 mb-3">1. 격렬한 신체 활동 <span className="text-xs text-gray-400">(무거운 물건 들기, 에어로빅 등)</span></p>
-          <div className="grid grid-cols-2 gap-4">
-            <NumberField label="지난 7일 중 며칠?" value={data.vigorous_activity_days} onChange={v => update({vigorous_activity_days:v})} unit="일" min={0} max={7} />
-            <NumberField label="하루 평균 시간" value={data.vigorous_activity_time} onChange={v => update({vigorous_activity_time:v})} unit="분" min={0} />
+          {/* 1. 격렬한 신체 활동 */}
+          <div className="mb-5">
+            <p className="font-semibold text-gray-800 mb-1">1. 격렬한 신체 활동</p>
+            <p className="text-xs text-gray-400 mb-3">예: 무거운 물건 들기, 땅 파기, 에어로빅, 빠른 속도로 자전거 타기 등</p>
+            <div className="grid grid-cols-2 gap-4">
+              <NumberField
+                label="지난 7일 동안 격렬한 신체 활동을 10분 이상 한 날은 며칠입니까?"
+                value={data.vigorous_activity_days}
+                onChange={v => update({vigorous_activity_days:v})}
+                unit="일" min={0} max={7} />
+              <NumberField
+                label="그러한 날 중 하루에 보통 얼마나 많은 시간을 격렬한 신체 활동을 하는데 보냈습니까?"
+                value={data.vigorous_activity_time}
+                onChange={v => update({vigorous_activity_time:v})}
+                unit="분" min={0} max={1440} />
+            </div>
           </div>
 
-          <Divider label="중간 정도 활동" />
-          <div className="grid grid-cols-2 gap-4">
-            <NumberField label="지난 7일 중 며칠?" value={data.moderate_activity_days} onChange={v => update({moderate_activity_days:v})} unit="일" min={0} max={7} />
-            <NumberField label="하루 평균 시간" value={data.moderate_activity_time} onChange={v => update({moderate_activity_time:v})} unit="분" min={0} />
+          <Divider />
+
+          {/* 2. 중간 정도 신체 활동 */}
+          <div className="mb-5">
+            <p className="font-semibold text-gray-800 mb-1">2. 중간 정도의 신체 활동</p>
+            <p className="text-xs text-gray-400 mb-3">예: 가벼운 물건 나르기, 보통 속도로 자전거 타기, 복식 테니스 등 (걷기는 제외)</p>
+            <div className="grid grid-cols-2 gap-4">
+              <NumberField
+                label="지난 7일 동안 중간 정도의 신체 활동을 10분 이상 한 날은 며칠입니까?"
+                value={data.moderate_activity_days}
+                onChange={v => update({moderate_activity_days:v})}
+                unit="일" min={0} max={7} />
+              <NumberField
+                label="그러한 날 중 하루에 보통 얼마나 많은 시간을 중간 정도의 신체 활동을 하는데 보냈습니까?"
+                value={data.moderate_activity_time}
+                onChange={v => update({moderate_activity_time:v})}
+                unit="분" min={0} max={1440} />
+            </div>
           </div>
 
-          <Divider label="걷기" />
-          <div className="grid grid-cols-2 gap-4">
-            <NumberField label="지난 7일 중 며칠?" value={data.walking_days} onChange={v => update({walking_days:v})} unit="일" min={0} max={7} />
-            <NumberField label="하루 평균 시간" value={data.walking_time} onChange={v => update({walking_time:v})} unit="분" min={0} />
+          <Divider />
+
+          {/* 3. 걷기 */}
+          <div className="mb-5">
+            <p className="font-semibold text-gray-800 mb-1">3. 걷기</p>
+            <p className="text-xs text-gray-400 mb-3">직장에서, 집에서, 장소 간 이동, 여가 시간의 모든 걷기를 포함</p>
+            <div className="grid grid-cols-2 gap-4">
+              <NumberField
+                label="지난 7일 동안 10분 이상 걸은 날은 며칠입니까?"
+                value={data.walking_days}
+                onChange={v => update({walking_days:v})}
+                unit="일" min={0} max={7} />
+              <NumberField
+                label="그러한 날 중 하루에 보통 얼마나 많은 시간을 걷는데 보냈습니까?"
+                value={data.walking_time}
+                onChange={v => update({walking_time:v})}
+                unit="분" min={0} max={1440} />
+            </div>
           </div>
 
-          <Divider label="앉아 있는 시간" />
-          <NumberField label="평일 하루 앉아서 보낸 시간" value={data.sitting_time} onChange={v => update({sitting_time:v})} unit="분" min={0} max={1440} />
+          <Divider />
 
-          <InfoBox type="success">
-            📊 총 신체 활동량: <strong>{totalMet.toFixed(0)} MET-분/주</strong><br/>
-            활동 수준: <strong>{activityLevel}</strong>
-          </InfoBox>
+          {/* 4. 앉아서 보낸 시간 */}
+          <div className="mb-5">
+            <p className="font-semibold text-gray-800 mb-1">4. 앉아서 보낸 시간</p>
+            <p className="text-xs text-gray-400 mb-3">책상에 앉아 있거나, 친구를 만나거나, 독서할 때 앉거나, 텔레비전을 앉아서 또는 누워서 시청한 시간이 포함</p>
+            <NumberField
+              label="지난 7일 동안 평일 하루에 앉아서 보낸 시간은 얼마나 됩니까?"
+              value={data.sitting_time}
+              onChange={v => update({sitting_time:v})}
+              unit="분" min={0} max={1440} />
+          </div>
+
+          {/* 활동량 요약 */}
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mt-2">
+            <p className="text-sm font-semibold text-blue-800 mb-3">📊 신체 활동량 요약</p>
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              {[
+                ['격렬한 활동', ((data.vigorous_activity_days||0)*(data.vigorous_activity_time||0)*8.0).toFixed(2)],
+                ['중간 활동', ((data.moderate_activity_days||0)*(data.moderate_activity_time||0)*4.0).toFixed(2)],
+                ['걷기', ((data.walking_days||0)*(data.walking_time||0)*3.3).toFixed(2)],
+                ['총 활동량', totalMet.toFixed(2)],
+              ].map(([label, val]) => (
+                <div key={label} className="bg-white rounded-lg p-2.5 text-center">
+                  <p className="text-xs text-gray-500">{label}</p>
+                  <p className="text-sm font-bold text-blue-700 mt-0.5">{val}</p>
+                  <p className="text-xs text-gray-400">MET-분/주</p>
+                </div>
+              ))}
+            </div>
+            <div className={`rounded-lg px-3 py-2 text-sm font-semibold text-center ${
+              activityLevel.includes('높은') ? 'bg-green-100 text-green-800' :
+              activityLevel.includes('중간') ? 'bg-yellow-100 text-yellow-800' :
+              'bg-red-100 text-red-700'
+            }`}>
+              💪 신체 활동 수준: {activityLevel}
+            </div>
+          </div>
         </div>
       )}
 

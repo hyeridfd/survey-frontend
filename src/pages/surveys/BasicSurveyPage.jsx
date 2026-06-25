@@ -116,6 +116,18 @@ export default function BasicSurveyPage() {
 
   const goToDashboard = () => navigate('/dashboard')
 
+  const SIDEBAR_ITEMS = [
+    { page: 1, label: '인구통계' },
+    { page: 2, label: '질환 정보' },
+    { page: 3, label: '식사 특성' },
+    { page: 4, label: '건강 측정치' },
+    { page: 5, label: 'IPAQ-SF' },
+    { page: 6, label: 'MNA-SF' },
+    { page: 7, label: 'K-MBI' },
+    { page: 8, label: 'MMSE-K' },
+    { page: 9, label: '시설 특성' },
+  ]
+
   if (saved) return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="card text-center p-10">
@@ -187,6 +199,8 @@ export default function BasicSurveyPage() {
       onNext={handleNext}
       onDashboard={goToDashboard}
       nextLabel={saving ? '저장 중...' : undefined}
+      sidebarItems={SIDEBAR_ITEMS}
+      onPageJump={(p) => { setPage(p); window.scrollTo(0,0) }}
     >
       {/* ── 1페이지: 인구통계 ── */}
       {page === 1 && (

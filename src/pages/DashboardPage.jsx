@@ -23,91 +23,111 @@ export default function DashboardPage() {
       .finally(() => setLoading(false))
   }, [])
 
-  const completedCount = progress
-    ? SURVEYS.filter(s => progress[s.field]).length
-    : 0
+  const completedCount = progress ? SURVEYS.filter(s => progress[s.field]).length : 0
+  const allDone = completedCount === SURVEYS.length
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* 상단 바 */}
-      <header className="bg-white shadow-sm px-4 py-3 flex items-center justify-between">
-        <h1 className="text-lg font-bold text-gray-900">📋 설문 선택</h1>
-        <button onClick={() => { logout(); navigate('/login') }} className="text-sm text-gray-500 hover:text-red-600">
-          로그아웃
-        </button>
-      </header>
+    <div className="min-h-screen flex flex-col relative" style={{
+      backgroundImage: 'url(https://fmrxrvqccphjrsxpkwof.supabase.co/storage/v1/object/public/assets/login.png)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center 30%',
+    }}>
+      {/* 그라데이션 오버레이 */}
+      <div className="absolute inset-0" style={{
+        background: 'linear-gradient(160deg, rgba(10,46,110,0.92) 0%, rgba(17,81,184,0.87) 40%, rgba(41,121,212,0.83) 70%, rgba(79,172,254,0.80) 100%)'
+      }} />
 
-      <div className="max-w-2xl mx-auto p-4 space-y-4">
-        {/* 사용자 정보 */}
-        <div className="grid grid-cols-3 gap-3">
-          {[
-            ['🏥 요양원', user?.nursing_home_name || user?.nursing_home_id],
-            ['👤 조사원', user?.surveyor_id],
-            ['👴 어르신', user?.elderly_id],
-          ].map(([label, val]) => (
-            <div key={label} className="card py-3 text-center">
-              <p className="text-xs text-gray-500">{label}</p>
-              <p className="text-sm font-semibold text-gray-800 mt-0.5">{val}</p>
+      <div className="relative z-10 flex flex-col min-h-screen">
+        {/* 상단 헤더 */}
+        <header className="px-5 pt-12 pb-4">
+          {/* 사용자 정보 */}
+          <div className="flex items-start justify-between mb-5">
+            <div>
+              <p className="text-blue-200 text-xs font-medium mb-1">설문 조사</p>
+              <h1 className="text-white text-xl font-bold leading-tight">
+                {user?.nursing_home_name || user?.nursing_home_id}
+              </h1>
+              <p className="text-blue-200 text-sm mt-0.5">
+                조사원 {user?.surveyor_id} · 어르신 {user?.elderly_id}
+              </p>
             </div>
-          ))}
-        </div>
+            <button
+              onClick={() => { logout(); navigate('/login') }}
+              className="text-xs text-blue-200 border border-blue-300/40 px-3 py-1.5 rounded-full hover:bg-white/10 transition-colors mt-1">
+              로그아웃
+            </button>
+          </div>
 
-        {/* 진행 현황 */}
-        <div className="card">
-          <h2 className="section-title">📊 설문 진행 현황</h2>
+          {/* 진행률 바 */}
+          <div className="rounded-2xl p-4" style={{ background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.2)' }}>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-white text-sm font-semibold">전체 진행 현황</span>
+              {allDone
+                ? <span className="text-xs bg-green-400 text-white px-2 py-0.5 rounded-full font-medium">🎉 완료!</span>
+                : <span className="text-blue-200 text-xs">{completedCount} / {SURVEYS.length} 완료</span>
+              }
+            </div>
+            {/* 프로그레스 바 */}
+            <div className="w-full rounded-full h-2 mb-1" style={{ background: 'rgba(255,255,255,0.2)' }}>
+              <div className="h-2 rounded-full transition-all duration-500"
+                style={{
+                  width: `${(completedCount / SURVEYS.length) * 100}%`,
+                  background: allDone ? '#4ade80' : 'linear-gradient(90deg, #60a5fa, #a5f3fc)'
+                }} />
+            </div>
+          </div>
+        </header>
+
+        {/* 설문 목록 */}
+        <div className="flex-1 px-5 pb-8">
+          <p className="text-blue-100 text-xs font-semibold uppercase tracking-wide mb-3">설문 선택</p>
+
           {loading ? (
-            <p className="text-sm text-gray-400">불러오는 중...</p>
+            <div className="text-center py-8 text-blue-200 text-sm">불러오는 중...</div>
           ) : (
-            <>
-              <div className="progress-bar mb-2">
-                <div className="progress-fill" style={{ width: `${(completedCount / 3) * 100}%` }} />
-              </div>
-              <p className="text-xs text-gray-500 mb-4">{completedCount} / 3 완료</p>
-
-              {progress?.all_surveys_completed && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-sm text-green-800 mb-4">
-                  🎉 모든 설문이 완료되었습니다!
-                </div>
-              )}
-
-              <div className="space-y-2">
-                {SURVEYS.map((s, i) => (
-                  <div key={s.key} className="flex items-center justify-between py-2">
-                    <span className="text-sm text-gray-600">{i + 1}. {s.label}</span>
-                    {progress?.[s.field]
-                      ? <span className="badge-complete">✅ 완료</span>
-                      : <span className="badge-incomplete">⏳ 미완료</span>
-                    }
-                  </div>
-                ))}
-              </div>
-            </>
+            <div className="space-y-3">
+              {SURVEYS.map((s, i) => {
+                const done = progress?.[s.field]
+                return (
+                  <button
+                    key={s.key}
+                    onClick={() => navigate(s.path)}
+                    className="w-full flex items-center justify-between p-4 rounded-2xl transition-all active:scale-98"
+                    style={{
+                      background: done ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.95)',
+                      backdropFilter: 'blur(10px)',
+                      border: done ? '1px solid rgba(74,222,128,0.4)' : '1px solid rgba(255,255,255,0.3)',
+                      boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+                    }}>
+                    <div className="flex items-center gap-3">
+                      {/* 번호 뱃지 */}
+                      <div className="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold shrink-0"
+                        style={{
+                          background: done ? 'rgba(74,222,128,0.3)' : 'linear-gradient(135deg, #1151b8, #2979d4)',
+                          color: done ? '#4ade80' : 'white'
+                        }}>
+                        {done ? '✓' : i + 1}
+                      </div>
+                      <div className="text-left">
+                        <p className={`font-semibold text-sm ${done ? 'text-white' : 'text-gray-800'}`}>
+                          {s.label}
+                        </p>
+                        <p className={`text-xs mt-0.5 ${done ? 'text-green-300' : 'text-gray-400'}`}>
+                          {done ? '완료됨 · 수정 가능' : '미완료'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className={`text-lg ${done ? 'text-green-300' : 'text-blue-500'}`}>→</div>
+                  </button>
+                )
+              })}
+            </div>
           )}
         </div>
 
-        {/* 설문 선택 버튼 */}
-        <div className="card">
-          <h2 className="section-title">설문 선택</h2>
-          <div className="space-y-3">
-            {SURVEYS.map((s, i) => (
-              <button
-                key={s.key}
-                onClick={() => navigate(s.path)}
-                className="w-full flex items-center justify-between p-4 rounded-lg border-2 border-blue-200 hover:border-blue-500 hover:bg-blue-50 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">{s.icon}</span>
-                  <div className="text-left">
-                    <p className="font-medium text-gray-800">{i + 1}. {s.label}</p>
-                    {progress?.[s.field] && (
-                      <p className="text-xs text-green-600">완료됨 (수정 가능)</p>
-                    )}
-                  </div>
-                </div>
-                <span className="text-blue-500">→</span>
-              </button>
-            ))}
-          </div>
+        {/* 하단 */}
+        <div className="text-center pb-6">
+          <p className="text-xs text-blue-200/70">서울대학교 농생명공학부 · 글로벌 블루푸드 미래리더 양성 프로젝트</p>
         </div>
       </div>
     </div>

@@ -66,17 +66,17 @@ function WasteSelector({ label, value, onChange }) {
     { v: 4, l: '모두' },
   ]
   return (
-    <div className="mb-4">
-      <p className="text-sm font-medium text-gray-700 mb-2">{label}</p>
-      <div className="flex gap-2 justify-between">
+    <div className="flex items-center gap-3 py-3 border-b border-gray-100 last:border-0">
+      {/* 음식 이름 */}
+      <span className="text-sm font-medium text-gray-700 w-14 shrink-0">{label}</span>
+      {/* 잔반량 버튼 5개 */}
+      <div className="flex gap-1.5 flex-1">
         {levels.map(opt => (
           <button key={opt.v} type="button" onClick={() => onChange(opt.v)}
-            className={`flex flex-col items-center py-2 px-1 rounded-xl border-2 transition-colors flex-1 min-w-0 ${
-              value === opt.v
-                ? 'border-blue-500 bg-blue-50'
-                : 'border-gray-200 hover:border-blue-300 bg-white'}`}>
-            <WasteCircle level={opt.v} size={44} />
-            <span className="text-xs text-gray-600 mt-1 whitespace-nowrap">{opt.l}</span>
+            className={`flex flex-col items-center py-1.5 rounded-xl border-2 transition-colors flex-1 ${
+              value === opt.v ? 'border-blue-500 bg-blue-50' : 'border-gray-200 bg-white'}`}>
+            <WasteCircle level={opt.v} size={32} />
+            <span className="text-xs text-gray-500 mt-0.5" style={{fontSize:'10px'}}>{opt.l}</span>
           </button>
         ))}
       </div>
@@ -355,8 +355,8 @@ export default function NutritionSurveyPage() {
             <div key={meal} className="mb-6 border border-gray-100 rounded-2xl p-4 bg-white shadow-sm">
               <h3 className="text-base font-bold text-blue-700 mb-4 border-b border-blue-100 pb-2">{meal}</h3>
 
-              {/* 잔반량 - 한 줄에 하나씩 (태블릿/모바일 최적화) */}
-              <div className="space-y-3 mb-5">
+              {/* 잔반량 - 음식명 왼쪽, 선택 버튼 오른쪽 */}
+              <div className="mb-5 bg-gray-50 rounded-xl px-3 py-1">
                 {MEAL_FOODS[meal].map(food => (
                   <WasteSelector key={food} label={food}
                     value={getWaste(activeDay, meal, food)}

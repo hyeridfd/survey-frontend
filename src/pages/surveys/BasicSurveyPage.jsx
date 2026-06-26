@@ -233,7 +233,16 @@ export default function BasicSurveyPage() {
           <RadioGroup label="10. 음식을 씹는 데 어려움이 있습니까?" options={['예','아니오']} value={data.chewing_difficulty === true ? '예' : data.chewing_difficulty === false ? '아니오' : undefined} onChange={v => update({chewing_difficulty: v === '예'})} horizontal />
           <RadioGroup label="11. 음식을 삼키는 데 어려움이 있습니까?" options={['예','아니오']} value={data.swallowing_difficulty === true ? '예' : data.swallowing_difficulty === false ? '아니오' : undefined} onChange={v => update({swallowing_difficulty: v === '예'})} horizontal />
           <SelectField label="12. 평소 식사 방법" options={['스스로 식사할 수 있음','요양보호사 등의 부분적인 도움 필요','요양보호사 등의 전적인 도움 필요']} value={data.eating_independence} onChange={v => update({eating_independence:v})} />
-          <SelectField label="13. 식사 형태" options={['일반식','다진식','갈은식(믹서식)','유동식']} value={data.meal_type} onChange={v => update({meal_type:v})} />
+          <SelectField label="13. 식사 형태" options={['일반식','다진식','갈은식(믹서식)','유동식','기타']} value={data.meal_type} onChange={v => update({meal_type:v})} />
+          {data.meal_type === '기타' && (
+            <input
+              type="text"
+              className="form-input text-sm mt-1 mb-4"
+              placeholder="식사 형태를 직접 입력해주세요"
+              value={data.meal_type_etc || ''}
+              onChange={e => update({ meal_type_etc: e.target.value })}
+            />
+          )}
         </div>
       )}
 

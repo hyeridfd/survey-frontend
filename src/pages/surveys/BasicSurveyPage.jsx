@@ -232,9 +232,8 @@ export default function BasicSurveyPage() {
           <h2 className="section-title">식사 관련 특성</h2>
           <RadioGroup label="10. 음식을 씹는 데 어려움이 있습니까?" options={['예','아니오']} value={data.chewing_difficulty === true ? '예' : data.chewing_difficulty === false ? '아니오' : undefined} onChange={v => update({chewing_difficulty: v === '예'})} horizontal />
           <RadioGroup label="11. 음식을 삼키는 데 어려움이 있습니까?" options={['예','아니오']} value={data.swallowing_difficulty === true ? '예' : data.swallowing_difficulty === false ? '아니오' : undefined} onChange={v => update({swallowing_difficulty: v === '예'})} horizontal />
-          <SelectField label="12. 음식 섭취 방법" options={['어렵지 않음','일반식','잘게 썬 음식','갈은 음식','믹서 음식(유동식)','기타']} value={data.food_preparation_method} onChange={v => update({food_preparation_method:v})} />
-          <SelectField label="13. 평소 식사 방법" options={['스스로 식사할 수 있음','요양보호사 등의 부분적인 도움 필요','요양보호사 등의 전적인 도움 필요']} value={data.eating_independence} onChange={v => update({eating_independence:v})} />
-          <SelectField label="14. 식사 형태" options={['일반식','다진식','갈은식(믹서식)','유동식']} value={data.meal_type} onChange={v => update({meal_type:v})} />
+          <SelectField label="12. 평소 식사 방법" options={['스스로 식사할 수 있음','요양보호사 등의 부분적인 도움 필요','요양보호사 등의 전적인 도움 필요']} value={data.eating_independence} onChange={v => update({eating_independence:v})} />
+          <SelectField label="13. 식사 형태" options={['일반식','다진식','갈은식(믹서식)','유동식']} value={data.meal_type} onChange={v => update({meal_type:v})} />
         </div>
       )}
 
@@ -243,14 +242,14 @@ export default function BasicSurveyPage() {
         <div>
           <h2 className="section-title">기본 건강 측정치</h2>
           <div className="grid grid-cols-2 gap-4">
-            <NumberField label="15. 신장" value={data.height} onChange={v => update({height:v})} unit="cm" min={0} max={250} step={0.1} />
-            <NumberField label="16. 체중" value={data.weight} onChange={v => update({weight:v})} unit="kg" min={0} max={200} step={0.1} />
-            <NumberField label="17. 허리둘레" value={data.waist_circumference} onChange={v => update({waist_circumference:v})} unit="cm" min={0} max={200} step={0.1} />
+            <NumberField label="14. 신장" value={data.height} onChange={v => update({height:v})} unit="cm" min={0} max={250} step={0.1} />
+            <NumberField label="15. 체중" value={data.weight} onChange={v => update({weight:v})} unit="kg" min={0} max={200} step={0.1} />
+            <NumberField label="16. 허리둘레" value={data.waist_circumference} onChange={v => update({waist_circumference:v})} unit="cm" min={0} max={200} step={0.1} />
             <div>
               {bmi && <InfoBox>BMI: <strong>{bmi}</strong> kg/m²</InfoBox>}
             </div>
-            <NumberField label="18. 수축기 혈압" value={data.systolic_bp} onChange={v => update({systolic_bp:v})} unit="mmHg" min={0} max={300} />
-            <NumberField label="19. 이완기 혈압" value={data.diastolic_bp} onChange={v => update({diastolic_bp:v})} unit="mmHg" min={0} max={200} />
+            <NumberField label="17. 수축기 혈압" value={data.systolic_bp} onChange={v => update({systolic_bp:v})} unit="mmHg" min={0} max={300} />
+            <NumberField label="18. 이완기 혈압" value={data.diastolic_bp} onChange={v => update({diastolic_bp:v})} unit="mmHg" min={0} max={200} />
           </div>
         </div>
       )}

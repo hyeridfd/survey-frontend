@@ -206,10 +206,10 @@ export default function BasicSurveyPage() {
       {page === 1 && (
         <div>
           <h2 className="section-title">인구통계학적 특성</h2>
-          <RadioGroup label="1. 귀하의 성별은 선택해 주십시오" options={['남자','여자']} value={data.gender} onChange={v => update({gender:v})} horizontal />
-          <NumberField label="2. 귀하의 출생연도를 작성해 주십시오" value={data.age} onChange={v => update({age:v})} min={1900} max={2010} />
+          <RadioGroup label="1. 성별" options={['남자','여자']} value={data.gender} onChange={v => update({gender:v})} horizontal />
+          <NumberField label="2. 출생연도" value={data.age} onChange={v => update({age:v})} min={1900} max={2010} />
           <SelectField label="3. 장기요양등급" options={['1등급','2등급','3등급','4등급 이상']} value={data.care_grade} onChange={v => update({care_grade:v})} />
-          <SelectField label="4. 현재 요양시설 거주 기간" options={['1년 미만','1년 이상 ~ 3년 미만','3년 이상 ~ 5년 미만','5년 이상 ~ 10년 미만','10년 이상']} value={data.residence_duration} onChange={v => update({residence_duration:v})} />
+          <SelectField label="4. 요양시설 거주 기간" options={['1년 미만','1년 이상 ~ 3년 미만','3년 이상 ~ 5년 미만','5년 이상 ~ 10년 미만','10년 이상']} value={data.residence_duration} onChange={v => update({residence_duration:v})} />
           <SelectField label="5. 최종 학력" options={['무학','초등학교 졸업','중학교 졸업','고등학교 졸업','대학교(전문대 포함) 졸업 이상']} value={data.education} onChange={v => update({education:v})} />
           <SelectField label="6. 음주 및 흡연 여부" options={['둘 다 안함','과거에 음주를 했음','과거에 흡연을 했음','현재 음주하고 있음','현재 흡연하고 있음','둘 다 하고 있음']} value={data.drinking_smoking} onChange={v => update({drinking_smoking:v})} />
         </div>
@@ -219,9 +219,9 @@ export default function BasicSurveyPage() {
       {page === 2 && (
         <div>
           <h2 className="section-title">질환 정보</h2>
-          <CheckboxGroup label="7. 현재 보유하신 질환을 모두 선택해 주십시오" options={DISEASE_OPTIONS} value={data.diseases || []} onChange={v => update({diseases:v})} />
+          <CheckboxGroup label="7. 현재 보유 질환 종류 (복수 선택 가능)" options={DISEASE_OPTIONS} value={data.diseases || []} onChange={v => update({diseases:v})} etcValue={data.diseases_etc} onEtcChange={v => update({diseases_etc: v})} />
           <Divider />
-          <CheckboxGroup label="8. 현재 복용 중인 약물 (복수 선택 가능)" options={MEDICATION_OPTIONS} value={data.medications || []} onChange={v => update({medications:v})} />
+          <CheckboxGroup label="8. 현재 복용 중인 약물 (복수 선택 가능)" options={MEDICATION_OPTIONS} value={data.medications || []} onChange={v => update({medications:v})} etcValue={data.medications_etc} onEtcChange={v => update({medications_etc: v})} />
           <SelectField label="9. 약물 복용 개수" options={['1개','2개','3개','4개 이상']} value={data.medication_count} onChange={v => update({medication_count:v})} />
         </div>
       )}
@@ -234,7 +234,7 @@ export default function BasicSurveyPage() {
           <RadioGroup label="11. 음식을 삼키는 데 어려움이 있습니까?" options={['예','아니오']} value={data.swallowing_difficulty === true ? '예' : data.swallowing_difficulty === false ? '아니오' : undefined} onChange={v => update({swallowing_difficulty: v === '예'})} horizontal />
           <SelectField label="12. 음식 섭취 방법" options={['어렵지 않음','일반식','잘게 썬 음식','갈은 음식','믹서 음식(유동식)','기타']} value={data.food_preparation_method} onChange={v => update({food_preparation_method:v})} />
           <SelectField label="13. 평소 식사 방법" options={['스스로 식사할 수 있음','요양보호사 등의 부분적인 도움 필요','요양보호사 등의 전적인 도움 필요']} value={data.eating_independence} onChange={v => update({eating_independence:v})} />
-          <SelectField label="14. 식사 형태" options={['일반식','다진식','연하식','기타']} value={data.meal_type} onChange={v => update({meal_type:v})} />
+          <SelectField label="14. 식사 형태" options={['일반식','다진식','갈은식(믹서식)','유동식']} value={data.meal_type} onChange={v => update({meal_type:v})} />
         </div>
       )}
 
@@ -415,7 +415,7 @@ export default function BasicSurveyPage() {
                 {value:'0', label:'3kg 이상 감소'},
                 {value:'1', label:'모르겠다'},
                 {value:'2', label:'1kg~3kg 감소'},
-                {value:'3', label:'변화 없다'},
+                {value:'3', label:'줄지 않았다'},
               ]} value={String(data.mna_weight_change ?? '')} onChange={v => update({mna_weight_change: v})} />
             </div>
 
@@ -423,15 +423,15 @@ export default function BasicSurveyPage() {
             <div className="mb-5">
               <p className="font-semibold text-gray-800 mb-3">C. 거동 능력</p>
               <RadioGroup label="" options={[
-                {value:'0', label:'외출 불가, 침대나 의자에서만 생활 가능'},
-                {value:'1', label:'외출 불가, 집에서만 활동 가능'},
-                {value:'2', label:'외출 가능, 활동 제약 없음'},
+                {value:'0', label:'외출할 수 없고, 주로 앉거나 누워서 생활한다'},
+                {value:'1', label:'외출할 수는 없지만 집에서는 활동할 수 있다'},
+                {value:'2', label:'외출할 수 있다'},
               ]} value={String(data.mna_mobility ?? '')} onChange={v => update({mna_mobility: v})} />
             </div>
 
             {/* D */}
             <div className="mb-5">
-              <p className="font-semibold text-gray-800 mb-3">D. 지난 3개월 동안 정신적 스트레스를 경험했거나 급성 질환을 앓았던 적이 있습니까?</p>
+              <p className="font-semibold text-gray-800 mb-3">D. 지난 3개월 동안 많이 괴로운 일이 있었거나, 심하게 편찮으셨던 적이 있습니까?</p>
               <RadioGroup label="" options={[
                 {value:'0', label:'예'},
                 {value:'2', label:'아니오'},
@@ -592,7 +592,7 @@ export default function BasicSurveyPage() {
 
         return (
           <div>
-            <h2 className="section-title">K-MMSE-2 (간이정신상태검사 한국판)</h2>
+            <h2 className="section-title">K-MMSE-2 (한국판 간이정신상태검사 2판)</h2>
             <InfoBox>📝 인지기능을 평가합니다. 각 항목의 점수를 클릭하여 선택하세요.</InfoBox>
 
             {MMSE_STRUCTURE.map(section => (

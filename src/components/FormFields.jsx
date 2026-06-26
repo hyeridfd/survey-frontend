@@ -60,13 +60,16 @@ export function NumberField({ label, value, onChange, min = 0, max, step = 1, un
   )
 }
 
-export function CheckboxGroup({ label, options, value = [], onChange }) {
+export function CheckboxGroup({ label, options, value = [], onChange, etcValue = '', onEtcChange }) {
   const toggle = (opt) => {
     const next = value.includes(opt)
       ? value.filter(v => v !== opt)
       : [...value, opt]
     onChange(next)
   }
+  const hasEtc = options.includes('기타')
+  const etcChecked = value.includes('기타')
+
   return (
     <div className="mb-4">
       {label && <label className="question-label">{label}</label>}
@@ -83,6 +86,18 @@ export function CheckboxGroup({ label, options, value = [], onChange }) {
           </label>
         ))}
       </div>
+      {/* 기타 직접 입력 */}
+      {hasEtc && etcChecked && onEtcChange && (
+        <div className="mt-2">
+          <input
+            type="text"
+            className="form-input text-sm"
+            placeholder="기타 내용을 직접 입력해주세요"
+            value={etcValue || ''}
+            onChange={e => onEtcChange(e.target.value)}
+          />
+        </div>
+      )}
     </div>
   )
 }

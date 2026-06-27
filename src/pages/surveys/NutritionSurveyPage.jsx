@@ -7,12 +7,39 @@ import { InfoBox, Divider } from '../../components/FormFields'
 const TOTAL_PAGES = 3
 const DAYS = [1, 2, 3, 4, 5]
 
+// MEAL_FOODS: { 끼니: [{ food: 음식구분, menu: 메뉴명 }] }
+// 메뉴명은 실제 식단에 맞게 수정해주세요
 const MEAL_FOODS = {
-  '아침':  ['밥/죽', '국/탕', '주찬', '부찬1', '부찬2', '김치'],
-  '간식1': ['간식'],
-  '점심':  ['밥/죽', '국/탕', '주찬', '부찬1', '부찬2', '김치'],
-  '간식2': ['간식'],
-  '저녁':  ['밥/죽', '국/탕', '주찬', '부찬1', '부찬2', '김치'],
+  '아침':  [
+    { food: '밥/죽',  menu: '잡곡밥' },
+    { food: '국/탕',  menu: '된장국' },
+    { food: '주찬',   menu: '고등어구이' },
+    { food: '부찬1',  menu: '시금치나물' },
+    { food: '부찬2',  menu: '두부조림' },
+    { food: '김치',   menu: '배추김치' },
+  ],
+  '간식1': [
+    { food: '간식', menu: '요구르트' },
+  ],
+  '점심':  [
+    { food: '밥/죽',  menu: '백미밥' },
+    { food: '국/탕',  menu: '미역국' },
+    { food: '주찬',   menu: '돼지불고기' },
+    { food: '부찬1',  menu: '콩나물무침' },
+    { food: '부찬2',  menu: '감자조림' },
+    { food: '김치',   menu: '깍두기' },
+  ],
+  '간식2': [
+    { food: '간식', menu: '바나나' },
+  ],
+  '저녁':  [
+    { food: '밥/죽',  menu: '잡곡밥' },
+    { food: '국/탕',  menu: '콩나물국' },
+    { food: '주찬',   menu: '닭조림' },
+    { food: '부찬1',  menu: '무생채' },
+    { food: '부찬2',  menu: '호박볶음' },
+    { food: '김치',   menu: '배추김치' },
+  ],
 }
 const MEALS = Object.keys(MEAL_FOODS)
 
@@ -33,12 +60,15 @@ function WasteCircle({ level, size = 40 }) {
   )
 }
 
-// ── 그램 입력 (한 줄: 라벨 | 숫자입력 | − | +) ──
-function GramInput({ label, value, onChange }) {
+// ── 그램 입력 (한 줄: 라벨 | 메뉴명 | 숫자입력 | − | +) ──
+function GramInput({ label, menu, value, onChange }) {
   const val = value ?? 100
   return (
     <div className="flex items-center gap-2 py-2.5 border-b border-gray-100 last:border-0">
-      <span className="text-sm text-gray-700 w-16 shrink-0 font-medium">{label}</span>
+      <div className="w-24 shrink-0">
+        <span className="text-sm text-gray-700 font-medium block">{label}</span>
+        {menu && <span className="text-xs text-blue-500">{menu}</span>}
+      </div>
       <input
         type="number" min={0} step={1} value={val}
         onChange={e => onChange(Number(e.target.value) || 0)}
@@ -54,7 +84,7 @@ function GramInput({ label, value, onChange }) {
 }
 
 // ── 잔반 선택 (태블릿/모바일 최적화) ──
-function WasteSelector({ label, value, onChange }) {
+function WasteSelector({ label, menu, value, onChange }) {
   const levels = [
     { v: 0, l: '다 먹음' },
     { v: 1, l: '25%' },
@@ -64,8 +94,11 @@ function WasteSelector({ label, value, onChange }) {
   ]
   return (
     <div className="flex items-center gap-3 py-3 border-b border-gray-100 last:border-0">
-      {/* 음식 이름 */}
-      <span className="text-sm font-medium text-gray-700 w-14 shrink-0">{label}</span>
+      {/* 음식 이름 + 메뉴명 */}
+      <div className="w-20 shrink-0">
+        <span className="text-sm font-medium text-gray-700 block">{label}</span>
+        {menu && <span className="text-xs text-blue-500">{menu}</span>}
+      </div>
       {/* 잔반량 버튼 5개 */}
       <div className="flex gap-1.5 flex-1">
         {levels.map(opt => (
@@ -328,8 +361,8 @@ export default function NutritionSurveyPage() {
           {/* 선택된 끼니의 음식 목록 - 세로로 한 페이지에 */}
           <div className="bg-gray-50 rounded-xl px-4 py-2">
             <p className="text-xs text-gray-400 mb-1 pt-2">{activeDay}일차 · {activeMeal}</p>
-            {MEAL_FOODS[activeMeal].map(food => (
-              <GramInput key={food} label={food}
+            {MEAL_FOODS[activeMeal].map(({ food, menu }) => (
+              <GramInput key={food} label={food} menu={menu}
                 value={getGram(activeDay, activeMeal, food)}
                 onChange={v => setGram(activeDay, activeMeal, food, v)} />
             ))}
@@ -364,8 +397,8 @@ export default function NutritionSurveyPage() {
 
               {/* 잔반량 - 음식명 왼쪽, 선택 버튼 오른쪽 */}
               <div className="mb-5 bg-gray-50 rounded-xl px-3 py-1">
-                {MEAL_FOODS[meal].map(food => (
-                  <WasteSelector key={food} label={food}
+                {MEAL_FOODS[meal].map(({ food, menu }) => (
+                  <WasteSelector key={food} label={food} menu={menu}
                     value={getWaste(activeDay, meal, food)}
                     onChange={v => setWaste(activeDay, meal, food, v)} />
                 ))}

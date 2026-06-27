@@ -222,7 +222,7 @@ export default function BasicSurveyPage() {
           <CheckboxGroup label="7. 현재 보유 질환 종류 (복수 선택 가능)" options={DISEASE_OPTIONS} value={data.diseases || []} onChange={v => update({diseases:v})} etcValue={data.diseases_etc} onEtcChange={v => update({diseases_etc: v})} />
           <Divider />
           <CheckboxGroup label="8. 현재 복용 중인 약물 (복수 선택 가능)" options={MEDICATION_OPTIONS} value={data.medications || []} onChange={v => update({medications:v})} etcValue={data.medications_etc} onEtcChange={v => update({medications_etc: v})} />
-          <SelectField label="9. 약물 복용 개수" options={['1개','2개','3개','4개 이상']} value={data.medication_count} onChange={v => update({medication_count:v})} />
+          <SelectField label="9. 약물 복용 개수" options={['없음','1개','2개','3개','4개 이상']} value={data.medication_count} onChange={v => update({medication_count:v})} />
         </div>
       )}
 
@@ -421,9 +421,9 @@ export default function BasicSurveyPage() {
               <p className="font-semibold text-gray-800 mb-3">B. 지난 3개월 동안 몸무게가 줄었습니까?</p>
               <RadioGroup label="" options={[
                 {value:'0', label:'3kg 이상 감소'},
-                {value:'1', label:'모르겠다'},
                 {value:'2', label:'1kg~3kg 감소'},
                 {value:'3', label:'줄지 않았다'},
+                {value:'1', label:'모르겠다'},
               ]} value={String(data.mna_weight_change ?? '')} onChange={v => update({mna_weight_change: v})} />
             </div>
 

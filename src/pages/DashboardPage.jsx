@@ -7,7 +7,7 @@ const SURVEYS = [
   { key: 'basic', label: '기초 조사표', icon: '📝', path: '/survey/basic', field: 'basic_survey_completed' },
   { key: 'nutrition', label: '영양 조사표', icon: '🥗', path: '/survey/nutrition', field: 'nutrition_survey_completed' },
   { key: 'satisfaction', label: '만족도 및 선호도 조사표', icon: '😊', path: '/survey/satisfaction', field: 'satisfaction_survey_completed' },
-  { key: 'bluefood', label: '블루푸드 선호도 조사', icon: '🐟', path: '/survey/bluefood', field: 'bluefood_survey_completed' },
+  // { key: 'bluefood', label: '블루푸드 선호도 조사', icon: '🐟', path: '/survey/bluefood', field: 'bluefood_survey_completed' },
 ]
 
 export default function DashboardPage() {

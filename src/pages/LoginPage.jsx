@@ -3,11 +3,18 @@ import { useNavigate } from 'react-router-dom'
 import api from '../lib/api'
 import useAuthStore from '../lib/authStore'
 
+// 요양원 정보
+const NURSING_HOMES = [
+  { id: 'NH001', name: '헤리티지 실버케어 분당', prefix: 'HS' },
+  { id: 'NH002', name: '마리아의 집',            prefix: 'MH' },
+  { id: 'NH003', name: '과천시립요양원',          prefix: 'GS' },
+]
+
 export default function LoginPage() {
   const navigate = useNavigate()
   const setAuth = useAuthStore((s) => s.setAuth)
 
-  const [nursingHomeId] = useState('NH001')
+  const [selectedNH, setSelectedNH] = useState(NURSING_HOMES[0])
   const [surveyorId, setSurveyorId] = useState('SRV01')
   const [elNum, setElNum] = useState('')
   const [error, setError] = useState('')
@@ -17,15 +24,22 @@ export default function LoginPage() {
   const [adminPw, setAdminPw] = useState('')
   const [adminError, setAdminError] = useState('')
 
+  const handleNHChange = (e) => {
+    const nh = NURSING_HOMES.find(n => n.id === e.target.value)
+    setSelectedNH(nh)
+    setElNum('') // 요양원 바뀌면 어르신 번호 초기화
+    setError('')
+  }
+
   const handleLogin = async (e) => {
     e.preventDefault()
     if (!elNum) { setError('어르신 번호를 입력해주세요.'); return }
     setLoading(true); setError('')
     try {
       const res = await api.post('/auth/login', {
-        nursing_home_id: nursingHomeId,
+        nursing_home_id: selectedNH.id,
         surveyor_id: surveyorId,
-        elderly_id: `HC${elNum}`,
+        elderly_id: `${selectedNH.prefix}${elNum}`,
       })
       setAuth(res.data.token, {
         nursing_home_id: res.data.nursing_home_id,
@@ -68,9 +82,8 @@ export default function LoginPage() {
       {/* 상단 헤더 영역 */}
       <div className="flex-1 flex flex-col items-center justify-center px-5 pt-12 pb-6">
 
-        {/* 로고 + 타이틀 */}
+        {/* 타이틀 */}
         <div className="text-center mb-6">
-          {/* 메인 타이틀 */}
           <h1 className="text-2xl font-bold text-white tracking-tight leading-snug mb-3">
             요양원 입소 고령자 대상<br />건강 프로파일 분석 및 선호도 조사
           </h1>
@@ -88,12 +101,26 @@ export default function LoginPage() {
             </h2>
 
             <form onSubmit={handleLogin} className="space-y-4">
-              {/* 요양원 ID */}
+
+              {/* 요양원 선택 */}
+              <div>
+                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5 block">요양원</label>
+                <select
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm bg-white text-gray-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  value={selectedNH.id}
+                  onChange={handleNHChange}>
+                  {NURSING_HOMES.map(nh => (
+                    <option key={nh.id} value={nh.id}>{nh.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* 요양원 ID 표시 (읽기 전용) */}
               <div>
                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5 block">요양원 ID</label>
                 <input
                   className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm bg-gray-50 text-gray-400 font-medium"
-                  value={nursingHomeId} disabled />
+                  value={selectedNH.id} disabled />
               </div>
 
               {/* 조사원 ID */}
@@ -110,8 +137,8 @@ export default function LoginPage() {
               <div>
                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5 block">어르신 ID</label>
                 <div className="flex gap-2">
-                  <div className="flex items-center justify-center w-16 border border-gray-200 rounded-xl bg-gray-50 text-gray-500 text-sm font-bold">
-                    HC
+                  <div className="flex items-center justify-center px-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-500 text-sm font-bold shrink-0">
+                    {selectedNH.prefix}
                   </div>
                   <input
                     className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm bg-white text-gray-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -122,6 +149,9 @@ export default function LoginPage() {
                     inputMode="numeric"
                   />
                 </div>
+                <p className="text-xs text-gray-400 mt-1 pl-1">
+                  예: {selectedNH.prefix}01, {selectedNH.prefix}02 ...
+                </p>
               </div>
 
               {error && (

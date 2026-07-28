@@ -254,12 +254,11 @@ export default function BasicSurveyPage() {
           <div className="grid grid-cols-2 gap-4">
             <NumberField label="14. 신장" value={data.height} onChange={v => update({height:v})} unit="cm" min={0} max={250} step={0.1} />
             <NumberField label="15. 체중" value={data.weight} onChange={v => update({weight:v})} unit="kg" min={0} max={200} step={0.1} />
-            <NumberField label="16. 허리둘레" value={data.waist_circumference} onChange={v => update({waist_circumference:v})} unit="cm" min={0} max={200} step={0.1} />
             <div>
               {bmi && <InfoBox>BMI: <strong>{bmi}</strong> kg/m²</InfoBox>}
             </div>
-            <NumberField label="17. 수축기 혈압" value={data.systolic_bp} onChange={v => update({systolic_bp:v})} unit="mmHg" min={0} max={300} />
-            <NumberField label="18. 이완기 혈압" value={data.diastolic_bp} onChange={v => update({diastolic_bp:v})} unit="mmHg" min={0} max={200} />
+            <NumberField label="16. 수축기 혈압" value={data.systolic_bp} onChange={v => update({systolic_bp:v})} unit="mmHg" min={0} max={300} />
+            <NumberField label="17. 이완기 혈압" value={data.diastolic_bp} onChange={v => update({diastolic_bp:v})} unit="mmHg" min={0} max={200} />
           </div>
         </div>
       )}

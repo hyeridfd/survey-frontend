@@ -9,39 +9,154 @@ const DAYS = [1, 2, 3, 4, 5]
 
 // MEAL_FOODS: { 끼니: [{ food: 음식구분, menu: 메뉴명 }] }
 // 메뉴명은 실제 식단에 맞게 수정해주세요
-const MEAL_FOODS = {
-  '아침':  [
-    { food: '밥/죽',  menu: '잡곡밥' },
-    { food: '국/탕',  menu: '된장국' },
-    { food: '주찬',   menu: '고등어구이' },
-    { food: '부찬1',  menu: '시금치나물' },
-    { food: '부찬2',  menu: '두부조림' },
-    { food: '김치',   menu: '배추김치' },
-  ],
-  '간식1': [
-    { food: '간식', menu: '요구르트' },
-  ],
-  '점심':  [
-    { food: '밥/죽',  menu: '백미밥' },
-    { food: '국/탕',  menu: '미역국' },
-    { food: '주찬',   menu: '돼지불고기' },
-    { food: '부찬1',  menu: '콩나물무침' },
-    { food: '부찬2',  menu: '감자조림' },
-    { food: '김치',   menu: '깍두기' },
-  ],
-  '간식2': [
-    { food: '간식', menu: '바나나' },
-  ],
-  '저녁':  [
-    { food: '밥/죽',  menu: '잡곡밥' },
-    { food: '국/탕',  menu: '콩나물국' },
-    { food: '주찬',   menu: '닭조림' },
-    { food: '부찬1',  menu: '무생채' },
-    { food: '부찬2',  menu: '호박볶음' },
-    { food: '김치',   menu: '배추김치' },
-  ],
+// 변경 (5일치 각각 다른 메뉴)
+const MEAL_FOODS_BY_DAY = {
+  1: {
+    '아침':  [
+      { food: '밥/죽',  menu: '흰밥/흰죽' },
+      { food: '국/탕',  menu: '단호박크림스프' },
+      { food: '주찬',   menu: '돈채가지볶음' },
+      { food: '부찬1',  menu: '건시래기지짐' },
+      { food: '부찬2',  menu: '멸치견과류볶음' },
+      { food: '김치',   menu: '배추김치' },
+    ],
+    '간식1': [{ food: '간식', menu: '검은콩두유' }],
+    '점심':  [
+      { food: '밥/죽',  menu: '잡곡밥/영양죽' },
+      { food: '국/탕',  menu: '시금치국' },
+      { food: '주찬',   menu: '카레라이스' },
+      { food: '부찬1',  menu: '돈육육전' },
+      { food: '부찬2',  menu: '치커리겉절이' },
+      { food: '김치',   menu: '배추김치' },
+    ],
+    '간식2': [{ food: '간식', menu: '수박' }],
+    '저녁':  [
+      { food: '밥/죽',  menu: '잡곡밥/영양죽' },
+      { food: '국/탕',  menu: '김치콩나물국' },
+      { food: '주찬',   menu: '가자미허브구이' },
+      { food: '부찬1',  menu: '미니새송이버터조림' },
+      { food: '부찬2',  menu: '무채초절이' },
+      { food: '김치',   menu: '배추김치' },
+    ],
+  },
+  2: {
+    '아침':  [
+      { food: '밥/죽',  menu: '흰밥/흰죽' },  // ← 여기 채워주세요
+      { food: '국/탕',  menu: '숭늉' },
+      { food: '주찬',   menu: '우민찌곤약조림' },
+      { food: '부찬1',  menu: '숙주나물' },
+      { food: '부찬2',  menu: '깻잎찜' },
+      { food: '김치',   menu: '배추김치' },
+    ],
+    '간식1': [{ food: '간식', menu: '비피더스' }],
+    '점심':  [
+      { food: '밥/죽',  menu: '잡곡밥/영양죽' },
+      { food: '국/탕',  menu: '냉이된장국' },
+      { food: '주찬',   menu: '돈육김치찜' },
+      { food: '부찬1',  menu: '건새우그린빈볶음' },
+      { food: '부찬2',  menu: '꼬시래기무무침' },
+      { food: '김치',   menu: '백김치' },
+    ],
+    '간식2': [{ food: '간식', menu: '카스타드*주스' }],
+    '저녁':  [
+      { food: '밥/죽',  menu: '잡곡밥/영양죽' },
+      { food: '국/탕',  menu: '감자양파국' },
+      { food: '주찬',   menu: '스크램블에그' },
+      { food: '부찬1',  menu: '마파두부조림' },
+      { food: '부찬2',  menu: '오이땅콩소스무침' },
+      { food: '김치',   menu: '배추김치' },
+    ],
+  },
+  3: {
+    '아침':  [
+      { food: '밥/죽',  menu: '흰밥/흰죽' },  // ← 여기 채워주세요
+      { food: '국/탕',  menu: '숭늉' },
+      { food: '주찬',   menu: '우민찌곤약조림' },
+      { food: '부찬1',  menu: '숙주나물' },
+      { food: '부찬2',  menu: '깻잎찜' },
+      { food: '김치',   menu: '배추김치' },
+    ],
+    '간식1': [{ food: '간식', menu: '비피더스' }],
+    '점심':  [
+      { food: '밥/죽',  menu: '잡곡밥/영양죽' },
+      { food: '국/탕',  menu: '냉이된장국' },
+      { food: '주찬',   menu: '돈육김치찜' },
+      { food: '부찬1',  menu: '건새우그린빈볶음' },
+      { food: '부찬2',  menu: '꼬시래기무무침' },
+      { food: '김치',   menu: '백김치' },
+    ],
+    '간식2': [{ food: '간식', menu: '카스타드*주스' }],
+    '저녁':  [
+      { food: '밥/죽',  menu: '잡곡밥/영양죽' },
+      { food: '국/탕',  menu: '감자양파국' },
+      { food: '주찬',   menu: '스크램블에그' },
+      { food: '부찬1',  menu: '마파두부조림' },
+      { food: '부찬2',  menu: '오이땅콩소스무침' },
+      { food: '김치',   menu: '배추김치' },
+    ],
+  },
+  4: {
+    '아침':  [
+      { food: '밥/죽',  menu: '흰밥/흰죽' },  // ← 여기 채워주세요
+      { food: '국/탕',  menu: '숭늉' },
+      { food: '주찬',   menu: '우민찌곤약조림' },
+      { food: '부찬1',  menu: '숙주나물' },
+      { food: '부찬2',  menu: '깻잎찜' },
+      { food: '김치',   menu: '배추김치' },
+    ],
+    '간식1': [{ food: '간식', menu: '비피더스' }],
+    '점심':  [
+      { food: '밥/죽',  menu: '잡곡밥/영양죽' },
+      { food: '국/탕',  menu: '냉이된장국' },
+      { food: '주찬',   menu: '돈육김치찜' },
+      { food: '부찬1',  menu: '건새우그린빈볶음' },
+      { food: '부찬2',  menu: '꼬시래기무무침' },
+      { food: '김치',   menu: '백김치' },
+    ],
+    '간식2': [{ food: '간식', menu: '카스타드*주스' }],
+    '저녁':  [
+      { food: '밥/죽',  menu: '잡곡밥/영양죽' },
+      { food: '국/탕',  menu: '감자양파국' },
+      { food: '주찬',   menu: '스크램블에그' },
+      { food: '부찬1',  menu: '마파두부조림' },
+      { food: '부찬2',  menu: '오이땅콩소스무침' },
+      { food: '김치',   menu: '배추김치' },
+    ],
+  },
+
+  5: {
+    '아침':  [
+      { food: '밥/죽',  menu: '흰밥/흰죽' },  // ← 여기 채워주세요
+      { food: '국/탕',  menu: '숭늉' },
+      { food: '주찬',   menu: '우민찌곤약조림' },
+      { food: '부찬1',  menu: '숙주나물' },
+      { food: '부찬2',  menu: '깻잎찜' },
+      { food: '김치',   menu: '배추김치' },
+    ],
+    '간식1': [{ food: '간식', menu: '비피더스' }],
+    '점심':  [
+      { food: '밥/죽',  menu: '잡곡밥/영양죽' },
+      { food: '국/탕',  menu: '냉이된장국' },
+      { food: '주찬',   menu: '돈육김치찜' },
+      { food: '부찬1',  menu: '건새우그린빈볶음' },
+      { food: '부찬2',  menu: '꼬시래기무무침' },
+      { food: '김치',   menu: '백김치' },
+    ],
+    '간식2': [{ food: '간식', menu: '카스타드*주스' }],
+    '저녁':  [
+      { food: '밥/죽',  menu: '잡곡밥/영양죽' },
+      { food: '국/탕',  menu: '감자양파국' },
+      { food: '주찬',   menu: '스크램블에그' },
+      { food: '부찬1',  menu: '마파두부조림' },
+      { food: '부찬2',  menu: '오이땅콩소스무침' },
+      { food: '김치',   menu: '배추김치' },
+    ],
+  }
 }
-const MEALS = Object.keys(MEAL_FOODS)
+
+const MEAL_FOODS = MEAL_FOODS_BY_DAY  // 이름 유지용
+const MEALS = ['아침', '간식1', '점심', '간식2', '저녁']
+  
 
 // ── 잔반량 원형 SVG ──
 function WasteCircle({ level, size = 40 }) {
@@ -361,7 +476,7 @@ export default function NutritionSurveyPage() {
           {/* 선택된 끼니의 음식 목록 - 세로로 한 페이지에 */}
           <div className="bg-gray-50 rounded-xl px-4 py-2">
             <p className="text-xs text-gray-400 mb-1 pt-2">{activeDay}일차 · {activeMeal}</p>
-            {MEAL_FOODS[activeMeal].map(({ food, menu }) => (
+            {MEAL_FOODS_BY_DAY[activeDay][activeMeal].map(({ food, menu }) => (
               <GramInput key={food} label={food} menu={menu}
                 value={getGram(activeDay, activeMeal, food)}
                 onChange={v => setGram(activeDay, activeMeal, food, v)} />
@@ -397,7 +512,7 @@ export default function NutritionSurveyPage() {
 
               {/* 잔반량 - 음식명 왼쪽, 선택 버튼 오른쪽 */}
               <div className="mb-5 bg-gray-50 rounded-xl px-3 py-1">
-                {MEAL_FOODS[meal].map(({ food, menu }) => (
+                {MEAL_FOODS_BY_DAY[activeDay][meal].map(({ food, menu }) => (
                   <WasteSelector key={food} label={food} menu={menu}
                     value={getWaste(activeDay, meal, food)}
                     onChange={v => setWaste(activeDay, meal, food, v)} />

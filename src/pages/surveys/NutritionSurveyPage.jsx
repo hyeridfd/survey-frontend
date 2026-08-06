@@ -36,7 +36,7 @@ function WasteCircle({ level, size = 40 }) {
 // ── 그램 입력 (한 줄: 라벨 | 숫자입력 | − | +) ──
 function GramInput({ label, value, onChange, isSnack = false }) {
   const val = value ?? 100
-  const isDeferred = val === 'deferred'
+  const isDeferred = val === '추후섭취'
   return (
     <div className="flex items-center gap-2 py-2.5 border-b border-gray-100 last:border-0">
       <span className="text-sm text-gray-700 w-16 shrink-0 font-medium">{label}</span>
@@ -63,7 +63,7 @@ function GramInput({ label, value, onChange, isSnack = false }) {
         </>
       )}
       {isSnack && !isDeferred && (
-        <button type="button" onClick={() => onChange('deferred')}
+        <button type="button" onClick={() => onChange('추후섭취')}
           className="shrink-0 text-xs px-2 py-1.5 rounded-lg border-2 border-orange-300 text-orange-600 bg-orange-50 hover:bg-orange-100 whitespace-nowrap leading-tight">
           추후<br/>섭취
         </button>
@@ -81,7 +81,7 @@ function WasteSelector({ label, value, onChange, isSnack = false }) {
     { v: 3, l: '75%' },
     { v: 4, l: '모두' },
   ]
-  const isDeferred = value === 'deferred'
+  const isDeferred = value === '추후섭취'
   return (
     <div className="flex items-center gap-3 py-3 border-b border-gray-100 last:border-0">
       {/* 음식 이름 */}
@@ -107,7 +107,7 @@ function WasteSelector({ label, value, onChange, isSnack = false }) {
         </div>
       )}
       {isSnack && !isDeferred && (
-        <button type="button" onClick={() => onChange('deferred')}
+        <button type="button" onClick={() => onChange('추후섭취')}
           className="shrink-0 text-xs px-2 py-1.5 rounded-lg border-2 border-orange-300 text-orange-600 bg-orange-50 hover:bg-orange-100 whitespace-nowrap leading-tight">
           추후<br/>섭취
         </button>

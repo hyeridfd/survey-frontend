@@ -7,14 +7,156 @@ import { InfoBox, Divider } from '../../components/FormFields'
 const TOTAL_PAGES = 3
 const DAYS = [1, 2, 3, 4, 5]
 
-const MEAL_FOODS = {
-  '아침':  ['밥/죽', '국/탕', '주찬', '부찬1', '부찬2', '김치'],
-  '간식1': ['간식'],
-  '점심':  ['밥/죽', '국/탕', '주찬', '부찬1', '부찬2', '김치'],
-  '간식2': ['간식'],
-  '저녁':  ['밥/죽', '국/탕', '주찬', '부찬1', '부찬2', '김치'],
+// MEAL_FOODS: { 끼니: [{ food: 음식구분, menu: 메뉴명 }] }
+// 메뉴명은 실제 식단에 맞게 수정해주세요
+// 변경 (5일치 각각 다른 메뉴)
+const MEAL_FOODS_BY_DAY = {
+  1: {
+    '아침':  [
+      { food: '밥/죽',  menu: '흰밥/흰죽' },
+      { food: '국/탕',  menu: '단호박크림스프' },
+      { food: '주찬',   menu: '돈채가지볶음' },
+      { food: '부찬1',  menu: '건시래기지짐' },
+      { food: '부찬2',  menu: '멸치견과류볶음' },
+      { food: '김치',   menu: '배추김치' },
+    ],
+    '간식1': [{ food: '간식', menu: '검은콩두유' }],
+    '점심':  [
+      { food: '밥/죽',  menu: '잡곡밥/영양죽' },
+      { food: '국/탕',  menu: '시금치국' },
+      { food: '주찬',   menu: '카레라이스' },
+      { food: '부찬1',  menu: '돈육육전' },
+      { food: '부찬2',  menu: '치커리겉절이' },
+      { food: '김치',   menu: '배추김치' },
+    ],
+    '간식2': [{ food: '간식', menu: '수박' }],
+    '저녁':  [
+      { food: '밥/죽',  menu: '잡곡밥/영양죽' },
+      { food: '국/탕',  menu: '김치콩나물국' },
+      { food: '주찬',   menu: '가자미허브구이' },
+      { food: '부찬1',  menu: '미니새송이버터조림' },
+      { food: '부찬2',  menu: '무채초절이' },
+      { food: '김치',   menu: '배추김치' },
+    ],
+  },
+  2: {
+    '아침':  [
+      { food: '밥/죽',  menu: '흰밥/흰죽' },  // ← 여기 채워주세요
+      { food: '국/탕',  menu: '숭늉' },
+      { food: '주찬',   menu: '우민찌곤약조림' },
+      { food: '부찬1',  menu: '숙주나물' },
+      { food: '부찬2',  menu: '깻잎찜' },
+      { food: '김치',   menu: '배추김치' },
+    ],
+    '간식1': [{ food: '간식', menu: '비피더스' }],
+    '점심':  [
+      { food: '밥/죽',  menu: '잡곡밥/영양죽' },
+      { food: '국/탕',  menu: '냉이된장국' },
+      { food: '주찬',   menu: '돈육김치찜' },
+      { food: '부찬1',  menu: '건새우그린빈볶음' },
+      { food: '부찬2',  menu: '꼬시래기무무침' },
+      { food: '김치',   menu: '백김치' },
+    ],
+    '간식2': [{ food: '간식', menu: '카스타드*주스' }],
+    '저녁':  [
+      { food: '밥/죽',  menu: '잡곡밥/영양죽' },
+      { food: '국/탕',  menu: '감자양파국' },
+      { food: '주찬',   menu: '스크램블에그' },
+      { food: '부찬1',  menu: '마파두부조림' },
+      { food: '부찬2',  menu: '오이땅콩소스무침' },
+      { food: '김치',   menu: '배추김치' },
+    ],
+  },
+  3: {
+    '아침':  [
+      { food: '밥/죽',  menu: '흰밥/흰죽' },  // ← 여기 채워주세요
+      { food: '국/탕',  menu: '숭늉' },
+      { food: '주찬',   menu: '우민찌곤약조림' },
+      { food: '부찬1',  menu: '숙주나물' },
+      { food: '부찬2',  menu: '깻잎찜' },
+      { food: '김치',   menu: '배추김치' },
+    ],
+    '간식1': [{ food: '간식', menu: '비피더스' }],
+    '점심':  [
+      { food: '밥/죽',  menu: '잡곡밥/영양죽' },
+      { food: '국/탕',  menu: '냉이된장국' },
+      { food: '주찬',   menu: '돈육김치찜' },
+      { food: '부찬1',  menu: '건새우그린빈볶음' },
+      { food: '부찬2',  menu: '꼬시래기무무침' },
+      { food: '김치',   menu: '백김치' },
+    ],
+    '간식2': [{ food: '간식', menu: '카스타드*주스' }],
+    '저녁':  [
+      { food: '밥/죽',  menu: '잡곡밥/영양죽' },
+      { food: '국/탕',  menu: '감자양파국' },
+      { food: '주찬',   menu: '스크램블에그' },
+      { food: '부찬1',  menu: '마파두부조림' },
+      { food: '부찬2',  menu: '오이땅콩소스무침' },
+      { food: '김치',   menu: '배추김치' },
+    ],
+  },
+  4: {
+    '아침':  [
+      { food: '밥/죽',  menu: '흰밥/흰죽' },  // ← 여기 채워주세요
+      { food: '국/탕',  menu: '숭늉' },
+      { food: '주찬',   menu: '우민찌곤약조림' },
+      { food: '부찬1',  menu: '숙주나물' },
+      { food: '부찬2',  menu: '깻잎찜' },
+      { food: '김치',   menu: '배추김치' },
+    ],
+    '간식1': [{ food: '간식', menu: '비피더스' }],
+    '점심':  [
+      { food: '밥/죽',  menu: '잡곡밥/영양죽' },
+      { food: '국/탕',  menu: '냉이된장국' },
+      { food: '주찬',   menu: '돈육김치찜' },
+      { food: '부찬1',  menu: '건새우그린빈볶음' },
+      { food: '부찬2',  menu: '꼬시래기무무침' },
+      { food: '김치',   menu: '백김치' },
+    ],
+    '간식2': [{ food: '간식', menu: '카스타드*주스' }],
+    '저녁':  [
+      { food: '밥/죽',  menu: '잡곡밥/영양죽' },
+      { food: '국/탕',  menu: '감자양파국' },
+      { food: '주찬',   menu: '스크램블에그' },
+      { food: '부찬1',  menu: '마파두부조림' },
+      { food: '부찬2',  menu: '오이땅콩소스무침' },
+      { food: '김치',   menu: '배추김치' },
+    ],
+  },
+
+  5: {
+    '아침':  [
+      { food: '밥/죽',  menu: '흰밥/흰죽' },  // ← 여기 채워주세요
+      { food: '국/탕',  menu: '숭늉' },
+      { food: '주찬',   menu: '우민찌곤약조림' },
+      { food: '부찬1',  menu: '숙주나물' },
+      { food: '부찬2',  menu: '깻잎찜' },
+      { food: '김치',   menu: '배추김치' },
+    ],
+    '간식1': [{ food: '간식', menu: '비피더스' }],
+    '점심':  [
+      { food: '밥/죽',  menu: '잡곡밥/영양죽' },
+      { food: '국/탕',  menu: '냉이된장국' },
+      { food: '주찬',   menu: '돈육김치찜' },
+      { food: '부찬1',  menu: '건새우그린빈볶음' },
+      { food: '부찬2',  menu: '꼬시래기무무침' },
+      { food: '김치',   menu: '백김치' },
+    ],
+    '간식2': [{ food: '간식', menu: '카스타드*주스' }],
+    '저녁':  [
+      { food: '밥/죽',  menu: '잡곡밥/영양죽' },
+      { food: '국/탕',  menu: '감자양파국' },
+      { food: '주찬',   menu: '스크램블에그' },
+      { food: '부찬1',  menu: '마파두부조림' },
+      { food: '부찬2',  menu: '오이땅콩소스무침' },
+      { food: '김치',   menu: '배추김치' },
+    ],
+  }
 }
-const MEALS = Object.keys(MEAL_FOODS)
+
+const MEAL_FOODS = MEAL_FOODS_BY_DAY  // 이름 유지용
+const MEALS = ['아침', '간식1', '점심', '간식2', '저녁']
+  
 
 // ── 잔반량 원형 SVG ──
 function WasteCircle({ level, size = 40 }) {
@@ -33,12 +175,18 @@ function WasteCircle({ level, size = 40 }) {
   )
 }
 
+<<<<<<< HEAD
 // ── 그램 입력 (한 줄: 라벨 | 숫자입력 | − | +) ──
 function GramInput({ label, value, onChange, isSnack = false }) {
+=======
+// ── 그램 입력 (한 줄: 라벨 | 메뉴명 | 숫자입력 | − | +) ──
+function GramInput({ label, menu, value, onChange }) {
+>>>>>>> 72bf951bd14825f9654a34a2edbbf7caf04d40cf
   const val = value ?? 100
   const isDeferred = val === 'deferred'
   return (
     <div className="flex items-center gap-2 py-2.5 border-b border-gray-100 last:border-0">
+<<<<<<< HEAD
       <span className="text-sm text-gray-700 w-16 shrink-0 font-medium">{label}</span>
       {isDeferred ? (
         <div className="flex-1 flex items-center gap-2">
@@ -68,12 +216,32 @@ function GramInput({ label, value, onChange, isSnack = false }) {
           추후<br/>섭취
         </button>
       )}
+=======
+      <div className="w-24 shrink-0">
+        <span className="text-sm text-gray-700 font-medium block">{label}</span>
+        {menu && <span className="text-xs text-blue-500">{menu}</span>}
+      </div>
+      <input
+        type="number" min={0} step={1} value={val}
+        onChange={e => onChange(Number(e.target.value) || 0)}
+        className="flex-1 min-w-0 border border-gray-300 rounded-lg px-2 py-2 text-sm text-center font-medium text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+      />
+      <span className="text-xs text-gray-400 shrink-0">g</span>
+      <button type="button" onClick={() => onChange(Math.max(0, val - 10))}
+        className="w-9 h-9 shrink-0 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg border border-gray-200 text-gray-600 font-bold text-lg">−</button>
+      <button type="button" onClick={() => onChange(val + 10)}
+        className="w-9 h-9 shrink-0 flex items-center justify-center bg-blue-100 hover:bg-blue-200 rounded-lg border border-blue-200 text-blue-700 font-bold text-lg">+</button>
+>>>>>>> 72bf951bd14825f9654a34a2edbbf7caf04d40cf
     </div>
   )
 }
 
 // ── 잔반 선택 (태블릿/모바일 최적화) ──
+<<<<<<< HEAD
 function WasteSelector({ label, value, onChange, isSnack = false }) {
+=======
+function WasteSelector({ label, menu, value, onChange }) {
+>>>>>>> 72bf951bd14825f9654a34a2edbbf7caf04d40cf
   const levels = [
     { v: 0, l: '다 먹음' },
     { v: 1, l: '25%' },
@@ -84,6 +252,7 @@ function WasteSelector({ label, value, onChange, isSnack = false }) {
   const isDeferred = value === 'deferred'
   return (
     <div className="flex items-center gap-3 py-3 border-b border-gray-100 last:border-0">
+<<<<<<< HEAD
       {/* 음식 이름 */}
       <span className="text-sm font-medium text-gray-700 w-14 shrink-0">{label}</span>
       {isDeferred ? (
@@ -112,6 +281,24 @@ function WasteSelector({ label, value, onChange, isSnack = false }) {
           추후<br/>섭취
         </button>
       )}
+=======
+      {/* 음식 이름 + 메뉴명 */}
+      <div className="w-20 shrink-0">
+        <span className="text-sm font-medium text-gray-700 block">{label}</span>
+        {menu && <span className="text-xs text-blue-500">{menu}</span>}
+      </div>
+      {/* 잔반량 버튼 5개 */}
+      <div className="flex gap-1.5 flex-1">
+        {levels.map(opt => (
+          <button key={opt.v} type="button" onClick={() => onChange(opt.v)}
+            className={`flex flex-col items-center py-1.5 rounded-xl border-2 transition-colors flex-1 ${
+              value === opt.v ? 'border-blue-500 bg-blue-50' : 'border-gray-200 bg-white'}`}>
+            <WasteCircle level={opt.v} size={32} />
+            <span className="text-xs text-gray-500 mt-0.5" style={{fontSize:'10px'}}>{opt.l}</span>
+          </button>
+        ))}
+      </div>
+>>>>>>> 72bf951bd14825f9654a34a2edbbf7caf04d40cf
     </div>
   )
 }
@@ -363,9 +550,14 @@ export default function NutritionSurveyPage() {
           {/* 선택된 끼니의 음식 목록 - 세로로 한 페이지에 */}
           <div className="bg-gray-50 rounded-xl px-4 py-2">
             <p className="text-xs text-gray-400 mb-1 pt-2">{activeDay}일차 · {activeMeal}</p>
+<<<<<<< HEAD
             {MEAL_FOODS[activeMeal].map(food => (
               <GramInput key={food} label={food}
                 isSnack={activeMeal === '간식1' || activeMeal === '간식2'}
+=======
+            {MEAL_FOODS_BY_DAY[activeDay][activeMeal].map(({ food, menu }) => (
+              <GramInput key={food} label={food} menu={menu}
+>>>>>>> 72bf951bd14825f9654a34a2edbbf7caf04d40cf
                 value={getGram(activeDay, activeMeal, food)}
                 onChange={v => setGram(activeDay, activeMeal, food, v)} />
             ))}
@@ -400,9 +592,14 @@ export default function NutritionSurveyPage() {
 
               {/* 잔반량 - 음식명 왼쪽, 선택 버튼 오른쪽 */}
               <div className="mb-5 bg-gray-50 rounded-xl px-3 py-1">
+<<<<<<< HEAD
                 {MEAL_FOODS[meal].map(food => (
                   <WasteSelector key={food} label={food}
                     isSnack={meal === '간식1' || meal === '간식2'}
+=======
+                {MEAL_FOODS_BY_DAY[activeDay][meal].map(({ food, menu }) => (
+                  <WasteSelector key={food} label={food} menu={menu}
+>>>>>>> 72bf951bd14825f9654a34a2edbbf7caf04d40cf
                     value={getWaste(activeDay, meal, food)}
                     onChange={v => setWaste(activeDay, meal, food, v)} />
                 ))}

@@ -4,7 +4,7 @@ import api from '../../lib/api'
 import SurveyLayout from '../../components/layout/SurveyLayout'
 import { RadioGroup, SelectField, NumberField, CheckboxGroup, InfoBox, Divider } from '../../components/FormFields'
 
-const TOTAL_PAGES = 9
+const TOTAL_PAGES = 10
 
 const DISEASE_OPTIONS = [
   '없음','고혈압','당뇨병','고지혈증','심혈관 질환(심근경색, 협심증, 부정맥 등)',
@@ -126,6 +126,7 @@ export default function BasicSurveyPage() {
     { page: 7, label: 'K-MBI' },
     { page: 8, label: 'MMSE-K' },
     { page: 9, label: '시설 특성' },
+    { page: 10, label: 'GDS-SF' },
   ]
 
   if (saved) return (
@@ -222,7 +223,7 @@ export default function BasicSurveyPage() {
           <CheckboxGroup label="7. 현재 보유 질환 종류 (복수 선택 가능)" options={DISEASE_OPTIONS} value={data.diseases || []} onChange={v => update({diseases:v})} etcValue={data.diseases_etc} onEtcChange={v => update({diseases_etc: v})} />
           <Divider />
           <CheckboxGroup label="8. 현재 복용 중인 약물 (복수 선택 가능)" options={MEDICATION_OPTIONS} value={data.medications || []} onChange={v => update({medications:v})} etcValue={data.medications_etc} onEtcChange={v => update({medications_etc: v})} />
-          <SelectField label="9. 약물 복용 개수" options={['1개','2개','3개','4개 이상']} value={data.medication_count} onChange={v => update({medication_count:v})} />
+          <SelectField label="9. 약물 복용 개수" options={['없음','1개','2개','3개','4개 이상']} value={data.medication_count} onChange={v => update({medication_count:v})} />
         </div>
       )}
 
@@ -232,9 +233,17 @@ export default function BasicSurveyPage() {
           <h2 className="section-title">식사 관련 특성</h2>
           <RadioGroup label="10. 음식을 씹는 데 어려움이 있습니까?" options={['예','아니오']} value={data.chewing_difficulty === true ? '예' : data.chewing_difficulty === false ? '아니오' : undefined} onChange={v => update({chewing_difficulty: v === '예'})} horizontal />
           <RadioGroup label="11. 음식을 삼키는 데 어려움이 있습니까?" options={['예','아니오']} value={data.swallowing_difficulty === true ? '예' : data.swallowing_difficulty === false ? '아니오' : undefined} onChange={v => update({swallowing_difficulty: v === '예'})} horizontal />
-          <SelectField label="12. 음식 섭취 방법" options={['어렵지 않음','일반식','잘게 썬 음식','갈은 음식','믹서 음식(유동식)','기타']} value={data.food_preparation_method} onChange={v => update({food_preparation_method:v})} />
-          <SelectField label="13. 평소 식사 방법" options={['스스로 식사할 수 있음','요양보호사 등의 부분적인 도움 필요','요양보호사 등의 전적인 도움 필요']} value={data.eating_independence} onChange={v => update({eating_independence:v})} />
-          <SelectField label="14. 식사 형태" options={['일반식','다진식','갈은식(믹서식)','유동식']} value={data.meal_type} onChange={v => update({meal_type:v})} />
+          <SelectField label="12. 평소 식사 방법" options={['스스로 식사할 수 있음','요양보호사 등의 부분적인 도움 필요','요양보호사 등의 전적인 도움 필요']} value={data.eating_independence} onChange={v => update({eating_independence:v})} />
+          <SelectField label="13. 식사 형태" options={['일반식','다진식','갈은식(믹서식)','유동식','기타']} value={data.meal_type} onChange={v => update({meal_type:v})} />
+          {data.meal_type === '기타' && (
+            <input
+              type="text"
+              className="form-input text-sm mt-1 mb-4"
+              placeholder="식사 형태를 직접 입력해주세요"
+              value={data.meal_type_etc || ''}
+              onChange={e => update({ meal_type_etc: e.target.value })}
+            />
+          )}
         </div>
       )}
 
@@ -243,14 +252,13 @@ export default function BasicSurveyPage() {
         <div>
           <h2 className="section-title">기본 건강 측정치</h2>
           <div className="grid grid-cols-2 gap-4">
-            <NumberField label="15. 신장" value={data.height} onChange={v => update({height:v})} unit="cm" min={0} max={250} step={0.1} />
-            <NumberField label="16. 체중" value={data.weight} onChange={v => update({weight:v})} unit="kg" min={0} max={200} step={0.1} />
-            <NumberField label="17. 허리둘레" value={data.waist_circumference} onChange={v => update({waist_circumference:v})} unit="cm" min={0} max={200} step={0.1} />
+            <NumberField label="14. 신장" value={data.height} onChange={v => update({height:v})} unit="cm" min={0} max={250} step={0.1} />
+            <NumberField label="15. 체중" value={data.weight} onChange={v => update({weight:v})} unit="kg" min={0} max={200} step={0.1} />
+            <NumberField label="16. 수축기 혈압" value={data.systolic_bp} onChange={v => update({systolic_bp:v})} unit="mmHg" min={0} max={300} />
+            <NumberField label="17. 이완기 혈압" value={data.diastolic_bp} onChange={v => update({diastolic_bp:v})} unit="mmHg" min={0} max={200} />
             <div>
               {bmi && <InfoBox>BMI: <strong>{bmi}</strong> kg/m²</InfoBox>}
-            </div>
-            <NumberField label="18. 수축기 혈압" value={data.systolic_bp} onChange={v => update({systolic_bp:v})} unit="mmHg" min={0} max={300} />
-            <NumberField label="19. 이완기 혈압" value={data.diastolic_bp} onChange={v => update({diastolic_bp:v})} unit="mmHg" min={0} max={200} />
+            </div>          
           </div>
         </div>
       )}
@@ -413,9 +421,9 @@ export default function BasicSurveyPage() {
               <p className="font-semibold text-gray-800 mb-3">B. 지난 3개월 동안 몸무게가 줄었습니까?</p>
               <RadioGroup label="" options={[
                 {value:'0', label:'3kg 이상 감소'},
-                {value:'1', label:'모르겠다'},
                 {value:'2', label:'1kg~3kg 감소'},
                 {value:'3', label:'줄지 않았다'},
+                {value:'1', label:'모르겠다'},
               ]} value={String(data.mna_weight_change ?? '')} onChange={v => update({mna_weight_change: v})} />
             </div>
 
@@ -644,6 +652,92 @@ export default function BasicSurveyPage() {
           <RadioGroup label="영양사 배치 여부" options={['예','아니오']} value={data.nutritionist_present === true ? '예' : data.nutritionist_present === false ? '아니오' : undefined} onChange={v => update({nutritionist_present: v === '예'})} horizontal />
         </div>
       )}
+
+      {/* ── 10페이지: GDS-SF (우울 척도) ── */}
+      {page === 10 && (() => {
+        // GDS-SF 15문항
+        // 역채점 문항 (아니오=1점): 1, 5, 7, 11, 13번
+        const GDS_ITEMS = [
+          { key: 'gds_1',  q: '1. 본인의 삶에 대체로 만족하십니까?',              reverse: true  },
+          { key: 'gds_2',  q: '2. 최근에 활동이나 관심거리가 줄었습니까?',        reverse: false },
+          { key: 'gds_3',  q: '3. 삶이 공허하다고 느끼십니까?',                   reverse: false },
+          { key: 'gds_4',  q: '4. 자주 싫증을 느끼십니까?',                       reverse: false },
+          { key: 'gds_5',  q: '5. 기분좋게 사시는 편입니까?',                     reverse: true  },
+          { key: 'gds_6',  q: '6. 좋지 않은 일이 닥쳐올까 두렵습니까?',           reverse: false },
+          { key: 'gds_7',  q: '7. 대체로 행복하다고 느끼십니까?',                 reverse: true  },
+          { key: 'gds_8',  q: '8. 자주 무기력함을 느끼십니까?',                   reverse: false },
+          { key: 'gds_9',  q: '9. 외출보다는 집안에 있기를 좋아하십니까?',        reverse: false },
+          { key: 'gds_10', q: '10. 다른 사람들보다 기억력이 떨어진다고 느끼십니까?', reverse: false },
+          { key: 'gds_11', q: '11. 살아있다는 사실이 기쁘십니까?',                reverse: true  },
+          { key: 'gds_12', q: '12. 본인의 삶이 가치가 없다고 느끼십니까?',        reverse: false },
+          { key: 'gds_13', q: '13. 생활에 활력이 넘치십니까?',                    reverse: true  },
+          { key: 'gds_14', q: '14. 본인의 현실이 절망적이라고 느끼십니까?',       reverse: false },
+          { key: 'gds_15', q: '15. 다른 사람들이 대체로 본인보다 낫다고 느끼십니까?', reverse: false },
+        ]
+
+        // 점수 계산: 역채점 문항은 '아니오'=1, 일반 문항은 '예'=1
+        const gdsScore = GDS_ITEMS.reduce((sum, item) => {
+          const val = data[item.key]
+          if (val === undefined || val === null) return sum
+          const score = item.reverse ? (val === '아니오' ? 1 : 0) : (val === '예' ? 1 : 0)
+          return sum + score
+        }, 0)
+
+        const answeredCount = GDS_ITEMS.filter(item => data[item.key] !== undefined && data[item.key] !== null).length
+
+        const gdsStatus = gdsScore <= 5 ? '정상' : gdsScore <= 9 ? '가벼운 우울증' : '심한 우울증'
+        const gdsColor = gdsScore <= 5 ? 'bg-green-50 border-green-300 text-green-800' : gdsScore <= 9 ? 'bg-yellow-50 border-yellow-300 text-yellow-800' : 'bg-red-50 border-red-300 text-red-800'
+
+        return (
+          <div>
+            <h2 className="section-title">우울 척도 (GDS-SF)</h2>
+            <InfoBox>📝 현재의 상태에 해당하는 답에 예/아니오로 응답해주세요. (총 15문항)</InfoBox>
+            <div className="space-y-1">
+              {GDS_ITEMS.map((item) => {
+                const val = data[item.key]
+                return (
+                  <div key={item.key} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
+                    <span className="text-sm text-gray-700 flex-1 pr-4">{item.q}</span>
+                    <div className="flex gap-2 shrink-0">
+                      {['예', '아니오'].map(opt => (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => update({ [item.key]: opt })}
+                          className={`px-3 py-1.5 rounded-lg text-sm font-medium border-2 transition-colors ${
+                            val === opt
+                              ? 'bg-blue-600 border-blue-600 text-white'
+                              : 'bg-white border-gray-300 text-gray-600 hover:border-blue-400'
+                          }`}
+                        >{opt}</button>
+                      ))}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* 결과 */}
+            <div className="mt-5 space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 text-center">
+                  <p className="text-xs text-gray-500">총점 ({answeredCount}/15 응답)</p>
+                  <p className="text-2xl font-bold text-blue-700 mt-1">{gdsScore}<span className="text-sm text-gray-400"> / 15점</span></p>
+                </div>
+                <div className={`border rounded-xl p-3 text-center ${gdsColor}`}>
+                  <p className="text-xs opacity-70">판정</p>
+                  <p className="text-sm font-bold mt-1">{gdsStatus}</p>
+                </div>
+              </div>
+              <div className="bg-gray-50 rounded-xl px-4 py-3 text-xs text-gray-600 leading-relaxed">
+                <strong>해석 기준:</strong><br/>
+                0~5점: 정상 &nbsp;|&nbsp; 6~9점: 가벼운 우울증 &nbsp;|&nbsp; 10~15점: 심한 우울증
+              </div>
+              <p className="text-xs text-gray-400 px-1">※ 음영처리=1점, 비음영처리=0점</p>
+            </div>
+          </div>
+        )
+      })()}
     </SurveyLayout>
   )
 }

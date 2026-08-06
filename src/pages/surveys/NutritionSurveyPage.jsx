@@ -365,7 +365,6 @@ export default function NutritionSurveyPage() {
             <p className="text-xs text-gray-400 mb-1 pt-2">{activeDay}일차 · {activeMeal}</p>
             {MEAL_FOODS[activeMeal].map(food => (
               <GramInput key={food} label={food}
-                isSnack={activeMeal === '간식1' || activeMeal === '간식2'}
                 value={getGram(activeDay, activeMeal, food)}
                 onChange={v => setGram(activeDay, activeMeal, food, v)} />
             ))}

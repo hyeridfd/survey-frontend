@@ -34,27 +34,46 @@ function WasteCircle({ level, size = 40 }) {
 }
 
 // ── 그램 입력 (한 줄: 라벨 | 숫자입력 | − | +) ──
-function GramInput({ label, value, onChange }) {
+function GramInput({ label, value, onChange, isSnack = false }) {
   const val = value ?? 100
+  const isDeferred = val === 'deferred'
   return (
     <div className="flex items-center gap-2 py-2.5 border-b border-gray-100 last:border-0">
       <span className="text-sm text-gray-700 w-16 shrink-0 font-medium">{label}</span>
-      <input
-        type="number" min={0} step={1} value={val}
-        onChange={e => onChange(Number(e.target.value) || 0)}
-        className="flex-1 min-w-0 border border-gray-300 rounded-lg px-2 py-2 text-sm text-center font-medium text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
-      />
-      <span className="text-xs text-gray-400 shrink-0">g</span>
-      <button type="button" onClick={() => onChange(Math.max(0, val - 10))}
-        className="w-9 h-9 shrink-0 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg border border-gray-200 text-gray-600 font-bold text-lg">−</button>
-      <button type="button" onClick={() => onChange(val + 10)}
-        className="w-9 h-9 shrink-0 flex items-center justify-center bg-blue-100 hover:bg-blue-200 rounded-lg border border-blue-200 text-blue-700 font-bold text-lg">+</button>
+      {isDeferred ? (
+        <div className="flex-1 flex items-center gap-2">
+          <span className="flex-1 text-center text-sm font-medium text-orange-600 bg-orange-50 border border-orange-200 rounded-lg py-2">
+            추후 섭취
+          </span>
+          <button type="button" onClick={() => onChange(100)}
+            className="text-xs text-gray-500 underline shrink-0">취소</button>
+        </div>
+      ) : (
+        <>
+          <input
+            type="number" min={0} step={1} value={val}
+            onChange={e => onChange(Number(e.target.value) || 0)}
+            className="flex-1 min-w-0 border border-gray-300 rounded-lg px-2 py-2 text-sm text-center font-medium text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          <span className="text-xs text-gray-400 shrink-0">g</span>
+          <button type="button" onClick={() => onChange(Math.max(0, val - 10))}
+            className="w-9 h-9 shrink-0 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg border border-gray-200 text-gray-600 font-bold text-lg">−</button>
+          <button type="button" onClick={() => onChange(val + 10)}
+            className="w-9 h-9 shrink-0 flex items-center justify-center bg-blue-100 hover:bg-blue-200 rounded-lg border border-blue-200 text-blue-700 font-bold text-lg">+</button>
+        </>
+      )}
+      {isSnack && !isDeferred && (
+        <button type="button" onClick={() => onChange('deferred')}
+          className="shrink-0 text-xs px-2 py-1.5 rounded-lg border-2 border-orange-300 text-orange-600 bg-orange-50 hover:bg-orange-100 whitespace-nowrap leading-tight">
+          추후<br/>섭취
+        </button>
+      )}
     </div>
   )
 }
 
 // ── 잔반 선택 (태블릿/모바일 최적화) ──
-function WasteSelector({ label, value, onChange }) {
+function WasteSelector({ label, value, onChange, isSnack = false }) {
   const levels = [
     { v: 0, l: '다 먹음' },
     { v: 1, l: '25%' },
@@ -62,21 +81,37 @@ function WasteSelector({ label, value, onChange }) {
     { v: 3, l: '75%' },
     { v: 4, l: '모두' },
   ]
+  const isDeferred = value === 'deferred'
   return (
     <div className="flex items-center gap-3 py-3 border-b border-gray-100 last:border-0">
       {/* 음식 이름 */}
       <span className="text-sm font-medium text-gray-700 w-14 shrink-0">{label}</span>
-      {/* 잔반량 버튼 5개 */}
-      <div className="flex gap-1.5 flex-1">
-        {levels.map(opt => (
-          <button key={opt.v} type="button" onClick={() => onChange(opt.v)}
-            className={`flex flex-col items-center py-1.5 rounded-xl border-2 transition-colors flex-1 ${
-              value === opt.v ? 'border-blue-500 bg-blue-50' : 'border-gray-200 bg-white'}`}>
-            <WasteCircle level={opt.v} size={32} />
-            <span className="text-xs text-gray-500 mt-0.5" style={{fontSize:'10px'}}>{opt.l}</span>
-          </button>
-        ))}
-      </div>
+      {isDeferred ? (
+        <div className="flex-1 flex items-center gap-2">
+          <span className="flex-1 text-center text-sm font-medium text-orange-600 bg-orange-50 border border-orange-200 rounded-lg py-2">
+            추후 섭취
+          </span>
+          <button type="button" onClick={() => onChange(0)}
+            className="text-xs text-gray-500 underline shrink-0">취소</button>
+        </div>
+      ) : (
+        <div className="flex gap-1.5 flex-1">
+          {levels.map(opt => (
+            <button key={opt.v} type="button" onClick={() => onChange(opt.v)}
+              className={`flex flex-col items-center py-1.5 rounded-xl border-2 transition-colors flex-1 ${
+                value === opt.v ? 'border-blue-500 bg-blue-50' : 'border-gray-200 bg-white'}`}>
+              <WasteCircle level={opt.v} size={32} />
+              <span className="text-xs text-gray-500 mt-0.5" style={{fontSize:'10px'}}>{opt.l}</span>
+            </button>
+          ))}
+        </div>
+      )}
+      {isSnack && !isDeferred && (
+        <button type="button" onClick={() => onChange('deferred')}
+          className="shrink-0 text-xs px-2 py-1.5 rounded-lg border-2 border-orange-300 text-orange-600 bg-orange-50 hover:bg-orange-100 whitespace-nowrap leading-tight">
+          추후<br/>섭취
+        </button>
+      )}
     </div>
   )
 }
@@ -330,6 +365,7 @@ export default function NutritionSurveyPage() {
             <p className="text-xs text-gray-400 mb-1 pt-2">{activeDay}일차 · {activeMeal}</p>
             {MEAL_FOODS[activeMeal].map(food => (
               <GramInput key={food} label={food}
+                isSnack={activeMeal === '간식1' || activeMeal === '간식2'}
                 value={getGram(activeDay, activeMeal, food)}
                 onChange={v => setGram(activeDay, activeMeal, food, v)} />
             ))}
@@ -366,6 +402,7 @@ export default function NutritionSurveyPage() {
               <div className="mb-5 bg-gray-50 rounded-xl px-3 py-1">
                 {MEAL_FOODS[meal].map(food => (
                   <WasteSelector key={food} label={food}
+                    isSnack={meal === '간식1' || meal === '간식2'}
                     value={getWaste(activeDay, meal, food)}
                     onChange={v => setWaste(activeDay, meal, food, v)} />
                 ))}

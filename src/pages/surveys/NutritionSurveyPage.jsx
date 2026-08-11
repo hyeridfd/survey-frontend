@@ -136,6 +136,65 @@ const MEAL_FOODS_BY_DAY = {
 
 const MEALS = ['아침', '간식1', '점심', '간식2', '저녁']
 
+// ── 배식량 기본값 (meal_form별, 1~2일차) ──
+const DEFAULT_PORTIONS = {
+  "1": {
+    "아침": {
+      "죽/일반찬":    { "밥/죽": 235.8, "국/탕": 118.5, "주찬": 82.7,  "부찬1": 31.3, "부찬2": 10.9, "김치1": 38.3 },
+      "일반밥/다진찬":{ "밥/죽": 151.0, "국/탕": 118.5, "주찬": 55.8,  "부찬1": 35.4, "부찬2": 12.2 },
+      "일반밥/일반찬":{ "밥/죽": 151.0, "국/탕": 118.5, "주찬": 82.7,  "부찬1": 31.3, "부찬2": 10.9, "김치1": 38.3 },
+      "죽/다진찬":    { "밥/죽": 235.8, "국/탕": 118.5, "주찬": 55.8,  "부찬1": 35.4, "부찬2": 12.2 },
+      "갈죽/갈찬":    { "국/탕": 118.5, "주찬": 76.8,   "부찬1": 27.3, "부찬2": 24.0, "김치1": 30.2, "김치2": 35.3 },
+      "죽/갈찬":      { "밥/죽": 235.8, "국/탕": 118.5, "주찬": 76.8,  "부찬1": 27.3, "부찬2": 24.0, "김치1": 30.2, "김치2": 35.3 },
+    },
+    "점심": {
+      "죽/일반찬":    { "밥/죽": 303.3, "주찬": 204.9, "부찬1": 38.1, "부찬2": 26.5, "김치1": 31.5, "김치2": 44.4 },
+      "일반밥/다진찬":{ "밥/죽": 180.0, "부찬1": 29.0,  "부찬2": 31.0, "김치1": 39.1, "김치2": 33.2 },
+      "일반밥/일반찬":{ "밥/죽": 180.0, "주찬": 204.9, "부찬1": 38.1, "부찬2": 26.5, "김치1": 31.5, "김치2": 44.4 },
+      "죽/다진찬":    { "밥/죽": 303.3, "부찬1": 29.0,  "부찬2": 31.0, "김치1": 39.1, "김치2": 33.2 },
+      "갈죽/갈찬":    { "밥/죽": 183.0, "주찬": 70.0,  "부찬1": 35.1, "부찬2": 28.8, "김치2": 38.6 },
+      "죽/갈찬":      { "밥/죽": 303.3, "주찬": 70.0,  "부찬1": 35.1, "부찬2": 28.8, "김치2": 38.6 },
+    },
+    "저녁": {
+      "죽/일반찬":    { "밥/죽": 317.2, "국/탕": 198.2, "주찬": 54.8, "부찬1": 58.5, "부찬2": 39.7, "김치1": 31.2, "김치2": 61.2 },
+      "일반밥/다진찬":{ "밥/죽": 132.6, "부찬1": 39.9,  "부찬2": 37.0, "김치1": 39.5, "김치2": 31.5 },
+      "일반밥/일반찬":{ "밥/죽": 132.6, "국/탕": 198.2, "주찬": 54.8, "부찬1": 58.5, "부찬2": 39.7, "김치1": 31.2, "김치2": 61.2 },
+      "죽/다진찬":    { "밥/죽": 317.2, "부찬1": 39.9,  "부찬2": 37.0, "김치1": 39.5, "김치2": 31.5 },
+      "갈죽/갈찬":    { "밥/죽": 324.2, "국/탕": 154.1, "주찬": 117.0,"부찬1": 40.1, "부찬2": 33.4, "김치2": 40.4 },
+      "죽/갈찬":      { "밥/죽": 317.2, "국/탕": 154.1, "주찬": 117.0,"부찬1": 40.1, "부찬2": 33.4, "김치2": 40.4 },
+    },
+  },
+  "2": {
+    "아침": {
+      "죽/일반찬":    { "밥/죽": 273.4, "국/탕": 233.5, "주찬": 77.3, "부찬1": 29.8, "부찬2": 30.1, "김치1": 45.0, "김치2": 71.5 },
+      "일반밥/다진찬":{ "밥/죽": 169.5, "국/탕": 233.5, "주찬": 65.0, "부찬1": 33.4, "부찬2": 19.1, "김치1": 43.1, "김치2": 50.5 },
+      "일반밥/일반찬":{ "밥/죽": 169.5, "국/탕": 233.5, "주찬": 77.3, "부찬1": 29.8, "부찬2": 30.1, "김치1": 45.0, "김치2": 71.5 },
+      "죽/다진찬":    { "밥/죽": 273.4, "국/탕": 233.5, "주찬": 65.0, "부찬1": 33.4, "부찬2": 19.1, "김치1": 43.1, "김치2": 50.5 },
+      "갈죽/갈찬":    { "밥/죽": 236.5, "국/탕": 98.6,  "주찬": 76.6, "부찬1": 27.0, "부찬2": 32.9, "김치2": 42.7 },
+      "죽/갈찬":      { "밥/죽": 273.4, "국/탕": 98.6,  "주찬": 76.6, "부찬1": 27.0, "부찬2": 32.9, "김치2": 42.7 },
+    },
+    "점심": {
+      "죽/일반찬":    { "밥/죽": 308.4, "국/탕": 183.2, "주찬": 75.7, "부찬1": 35.2, "부찬2": 38.5, "김치2": 46.4 },
+      "일반밥/다진찬":{ "밥/죽": 187.1, "주찬": 66.0,   "부찬1": 23.8, "부찬2": 57.5, "김치2": 40.8 },
+      "일반밥/일반찬":{ "밥/죽": 187.1, "국/탕": 183.2, "주찬": 75.7, "부찬1": 35.2, "부찬2": 38.5, "김치2": 46.4 },
+      "죽/다진찬":    { "밥/죽": 308.4, "주찬": 66.0,   "부찬1": 23.8, "부찬2": 57.5, "김치2": 40.8 },
+      "갈죽/갈찬":    { "밥/죽": 243.3, "국/탕": 113.2, "주찬": 39.2, "부찬1": 47.4, "부찬2": 37.5, "김치2": 35.7 },
+      "죽/갈찬":      { "밥/죽": 308.4, "국/탕": 113.2, "주찬": 39.2, "부찬1": 47.4, "부찬2": 37.5, "김치2": 35.7 },
+    },
+    "저녁": {
+      "죽/일반찬":    { "밥/죽": 228.7, "국/탕": 175.9, "주찬": 56.3, "부찬1": 99.7, "부찬2": 41.5, "김치1": 32.3, "김치2": 65.7 },
+      "일반밥/다진찬":{ "밥/죽": 192.7, "국/탕": 175.9, "주찬": 39.2, "부찬1": 56.0, "부찬2": 29.5, "김치1": 59.3, "김치2": 56.8 },
+      "일반밥/일반찬":{ "밥/죽": 192.7, "국/탕": 175.9, "주찬": 56.3, "부찬1": 99.7, "부찬2": 41.5, "김치1": 32.3, "김치2": 65.7 },
+      "죽/다진찬":    { "밥/죽": 228.7, "국/탕": 175.9, "주찬": 39.2, "부찬1": 56.0, "부찬2": 29.5, "김치1": 59.3, "김치2": 56.8 },
+      "갈죽/갈찬":    { "밥/죽": 156.3, "국/탕": 107.0, "주찬": 68.0, "부찬1": 54.9, "부찬2": 45.0, "김치2": 49.1 },
+      "죽/갈찬":      { "밥/죽": 228.7, "국/탕": 107.0, "주찬": 68.0, "부찬1": 54.9, "부찬2": 45.0, "김치2": 49.1 },
+    },
+  },
+}
+
+const APPLICABLE_MEAL_FORMS = ['죽/일반찬','일반밥/다진찬','일반밥/일반찬','죽/다진찬','갈죽/갈찬','죽/갈찬']
+
+
 // ── 잔반량 원형 SVG ──
 function WasteCircle({ level, size = 40 }) {
   const fills = [
@@ -341,25 +400,64 @@ export default function NutritionSurveyPage() {
   const [photos, setPhotos] = useState({})
 
   useEffect(() => {
-    api.get('/surveys/nutrition').then(r => {
-      const d = r.data
-      if (d && Object.keys(d).length > 0) {
-        setData(d)
-        try {
-          if (d.meal_portions) setMealPortions(typeof d.meal_portions === 'string' ? JSON.parse(d.meal_portions) : d.meal_portions)
-          if (d.plate_waste)   setPlateWaste(typeof d.plate_waste === 'string' ? JSON.parse(d.plate_waste) : d.plate_waste)
-          if (d.photos)        setPhotos(typeof d.photos === 'string' ? JSON.parse(d.photos) : d.photos)
-        } catch {}
-      }
-    })
+    // 어르신 meal_form 가져오기
+    const elderlyId = JSON.parse(localStorage.getItem('user') || '{}')?.elderly_id
+    let mealForm = null
+
+    const loadData = async () => {
+      // meal_form 조회
+      try {
+        if (elderlyId) {
+          const mfRes = await api.get('/surveys/nutrition/meal-form')
+          mealForm = mfRes.data?.meal_form || null
+        }
+      } catch {}
+
+      // 영양 조사 기존 데이터 로드
+      try {
+        const r = await api.get('/surveys/nutrition')
+        const d = r.data
+        if (d && Object.keys(d).length > 0) {
+          setData(d)
+          try {
+            if (d.meal_portions) {
+              setMealPortions(typeof d.meal_portions === 'string' ? JSON.parse(d.meal_portions) : d.meal_portions)
+            } else if (mealForm && APPLICABLE_MEAL_FORMS.includes(mealForm)) {
+              // 기존 데이터 없고 meal_form이 적용 대상이면 기본값 자동 세팅
+              applyDefaultPortions(mealForm)
+            }
+            if (d.plate_waste) setPlateWaste(typeof d.plate_waste === 'string' ? JSON.parse(d.plate_waste) : d.plate_waste)
+            if (d.photos)      setPhotos(typeof d.photos === 'string' ? JSON.parse(d.photos) : d.photos)
+          } catch {}
+        } else if (mealForm && APPLICABLE_MEAL_FORMS.includes(mealForm)) {
+          // 아예 데이터가 없으면 기본값 자동 세팅
+          applyDefaultPortions(mealForm)
+        }
+      } catch {}
+    }
+
+    loadData()
   }, [])
+
+  // meal_form에 따라 1~2일차 배식량 기본값 적용
+  const applyDefaultPortions = (mealForm) => {
+    const portions = {}
+    ;[1, 2].forEach(day => {
+      portions[`day${day}`] = {}
+      ;['아침', '점심', '저녁'].forEach(meal => {
+        const defaults = DEFAULT_PORTIONS?.[String(day)]?.[meal]?.[mealForm]
+        if (defaults) portions[`day${day}`][meal] = { ...defaults }
+      })
+    })
+    setMealPortions(portions)
+  }
 
   const photoKey = (day, meal, type) => `day${day}_${meal}_${type}`
 
   // 현재 일차의 끼니별 음식 목록 가져오기
   const getFoods = (day, meal) => MEAL_FOODS_BY_DAY[day]?.[meal] || MEAL_FOODS_BY_DAY[3][meal] || []
 
-  const getGram = (day, meal, food) => mealPortions[`day${day}`]?.[meal]?.[food] ?? 100
+  const getGram = (day, meal, food) => mealPortions[`day${day}`]?.[meal]?.[food] ?? ''
   const setGram = (day, meal, food, val) =>
     setMealPortions(prev => ({ ...prev, [`day${day}`]: { ...(prev[`day${day}`] || {}), [meal]: { ...(prev[`day${day}`]?.[meal] || {}), [food]: val } } }))
 

@@ -7,14 +7,134 @@ import { InfoBox, Divider } from '../../components/FormFields'
 const TOTAL_PAGES = 3
 const DAYS = [1, 2, 3, 4, 5]
 
-const MEAL_FOODS = {
-  '아침':  ['밥/죽', '국/탕', '주찬', '부찬1', '부찬2', '김치'],
-  '간식1': ['간식'],
-  '점심':  ['밥/죽', '국/탕', '주찬', '부찬1', '부찬2', '김치'],
-  '간식2': ['간식'],
-  '저녁':  ['밥/죽', '국/탕', '주찬', '부찬1', '부찬2', '김치'],
+// ── 5일치 메뉴 데이터 ──
+// food: 음식 구분, menu: 메뉴명 (실제 식단에 맞게 수정)
+const MEAL_FOODS_BY_DAY = {
+  1: { // 8/7
+    '아침': [
+      { food: '밥/죽',  menu: '흰밥/흰죽' },
+      { food: '국/탕',  menu: '단호박크림스프' },
+      { food: '주찬',   menu: '돈채가지볶음' },
+      { food: '부찬1',  menu: '건시래기지짐' },
+      { food: '부찬2',  menu: '멸치견과류볶음' },
+      { food: '김치1',  menu: '배추김치' },
+      { food: '김치2',  menu: '백김치' },
+    ],
+    '간식1': [{ food: '간식', menu: '검은콩두유' }],
+    '점심': [
+      { food: '밥/죽',  menu: '잡곡밥/영양죽' },
+      { food: '국/탕',  menu: '시금치국' },
+      { food: '주찬',   menu: '카레라이스' },
+      { food: '부찬1',  menu: '돈육육전' },
+      { food: '부찬2',  menu: '치커리겉절이' },
+      { food: '김치1',  menu: '배추김치' },
+      { food: '김치2',  menu: '백김치' },
+    ],
+    '간식2': [{ food: '간식', menu: '수박' }],
+    '저녁': [
+      { food: '밥/죽',  menu: '잡곡밥/영양죽' },
+      { food: '국/탕',  menu: '김치콩나물국' },
+      { food: '주찬',   menu: '가자미허브구이' },
+      { food: '부찬1',  menu: '미니새송이버터조림' },
+      { food: '부찬2',  menu: '무채초절이' },
+      { food: '김치1',  menu: '배추김치' },
+      { food: '김치2',  menu: '백김치' },
+    ],
+  },
+  2: { // 8/8
+    '아침': [
+      { food: '밥/죽',  menu: '흰밥/흰죽' },
+      { food: '국/탕',  menu: '숭늉' },
+      { food: '주찬',   menu: '우민찌곤약조림' },
+      { food: '부찬1',  menu: '숙주나물' },
+      { food: '부찬2',  menu: '깻잎찜' },
+      { food: '김치1',  menu: '배추김치' },
+      { food: '김치2',  menu: '백김치' },
+    ],
+    '간식1': [{ food: '간식', menu: '비피더스' }],
+    '점심': [
+      { food: '밥/죽',  menu: '잡곡밥/영양죽' },
+      { food: '국/탕',  menu: '냉이된장국' },
+      { food: '주찬',   menu: '돈육김치찜' },
+      { food: '부찬1',  menu: '건새우그린빈볶음' },
+      { food: '부찬2',  menu: '꼬시래기무무침' },
+      { food: '김치1',  menu: '배추김치' },
+      { food: '김치2',  menu: '백김치' },
+    ],
+    '간식2': [
+      { food: '간식A', menu: '카스타드' },
+      { food: '간식B', menu: '주스' },
+    ],
+    '저녁': [
+      { food: '밥/죽',  menu: '잡곡밥/영양죽' },
+      { food: '국/탕',  menu: '감자양파국' },
+      { food: '주찬',   menu: '스크램블에그' },
+      { food: '부찬1',  menu: '마파두부조림' },
+      { food: '부찬2',  menu: '오이땅콩소스무침' },
+      { food: '김치1',  menu: '배추김치' },
+      { food: '김치2',  menu: '백김치' },
+    ],
+  },
+  3: { // 메뉴 미정 - 기본 구조
+    '아침':  [
+      { food: '밥/죽', menu: '' }, { food: '국/탕', menu: '' },
+      { food: '주찬',  menu: '' }, { food: '부찬1', menu: '' },
+      { food: '부찬2', menu: '' }, { food: '김치1', menu: '배추김치' }, { food: '김치2', menu: '백김치' },
+    ],
+    '간식1': [{ food: '간식', menu: '' }],
+    '점심':  [
+      { food: '밥/죽', menu: '' }, { food: '국/탕', menu: '' },
+      { food: '주찬',  menu: '' }, { food: '부찬1', menu: '' },
+      { food: '부찬2', menu: '' }, { food: '김치1', menu: '배추김치' }, { food: '김치2', menu: '백김치' },
+    ],
+    '간식2': [{ food: '간식', menu: '' }],
+    '저녁':  [
+      { food: '밥/죽', menu: '' }, { food: '국/탕', menu: '' },
+      { food: '주찬',  menu: '' }, { food: '부찬1', menu: '' },
+      { food: '부찬2', menu: '' }, { food: '김치1', menu: '배추김치' }, { food: '김치2', menu: '백김치' },
+    ],
+  },
+  4: { // 메뉴 미정
+    '아침':  [
+      { food: '밥/죽', menu: '' }, { food: '국/탕', menu: '' },
+      { food: '주찬',  menu: '' }, { food: '부찬1', menu: '' },
+      { food: '부찬2', menu: '' }, { food: '김치1', menu: '배추김치' }, { food: '김치2', menu: '백김치' },
+    ],
+    '간식1': [{ food: '간식', menu: '' }],
+    '점심':  [
+      { food: '밥/죽', menu: '' }, { food: '국/탕', menu: '' },
+      { food: '주찬',  menu: '' }, { food: '부찬1', menu: '' },
+      { food: '부찬2', menu: '' }, { food: '김치1', menu: '배추김치' }, { food: '김치2', menu: '백김치' },
+    ],
+    '간식2': [{ food: '간식', menu: '' }],
+    '저녁':  [
+      { food: '밥/죽', menu: '' }, { food: '국/탕', menu: '' },
+      { food: '주찬',  menu: '' }, { food: '부찬1', menu: '' },
+      { food: '부찬2', menu: '' }, { food: '김치1', menu: '배추김치' }, { food: '김치2', menu: '백김치' },
+    ],
+  },
+  5: { // 메뉴 미정
+    '아침':  [
+      { food: '밥/죽', menu: '' }, { food: '국/탕', menu: '' },
+      { food: '주찬',  menu: '' }, { food: '부찬1', menu: '' },
+      { food: '부찬2', menu: '' }, { food: '김치1', menu: '배추김치' }, { food: '김치2', menu: '백김치' },
+    ],
+    '간식1': [{ food: '간식', menu: '' }],
+    '점심':  [
+      { food: '밥/죽', menu: '' }, { food: '국/탕', menu: '' },
+      { food: '주찬',  menu: '' }, { food: '부찬1', menu: '' },
+      { food: '부찬2', menu: '' }, { food: '김치1', menu: '배추김치' }, { food: '김치2', menu: '백김치' },
+    ],
+    '간식2': [{ food: '간식', menu: '' }],
+    '저녁':  [
+      { food: '밥/죽', menu: '' }, { food: '국/탕', menu: '' },
+      { food: '주찬',  menu: '' }, { food: '부찬1', menu: '' },
+      { food: '부찬2', menu: '' }, { food: '김치1', menu: '배추김치' }, { food: '김치2', menu: '백김치' },
+    ],
+  },
 }
-const MEALS = Object.keys(MEAL_FOODS)
+
+const MEALS = ['아침', '간식1', '점심', '간식2', '저녁']
 
 // ── 잔반량 원형 SVG ──
 function WasteCircle({ level, size = 40 }) {
@@ -33,28 +153,26 @@ function WasteCircle({ level, size = 40 }) {
   )
 }
 
-// ── 그램 입력 (한 줄: 라벨 | 숫자입력 | − | +) ──
-function GramInput({ label, value, onChange, isSnack = false }) {
+// ── 그램 입력 ──
+function GramInput({ label, menu, value, onChange, isSnack = false }) {
   const val = value ?? 100
   const isDeferred = val === '추후섭취'
   return (
     <div className="flex items-center gap-2 py-2.5 border-b border-gray-100 last:border-0">
-      <span className="text-sm text-gray-700 w-16 shrink-0 font-medium">{label}</span>
+      <div className="w-16 shrink-0">
+        <span className="text-sm text-gray-700 font-medium block">{label}</span>
+        {menu && <span className="text-xs text-blue-500 leading-tight block">{menu}</span>}
+      </div>
       {isDeferred ? (
         <div className="flex-1 flex items-center gap-2">
-          <span className="flex-1 text-center text-sm font-medium text-orange-600 bg-orange-50 border border-orange-200 rounded-lg py-2">
-            추후 섭취
-          </span>
-          <button type="button" onClick={() => onChange(100)}
-            className="text-xs text-gray-500 underline shrink-0">취소</button>
+          <span className="flex-1 text-center text-sm font-medium text-orange-600 bg-orange-50 border border-orange-200 rounded-lg py-2">추후 섭취</span>
+          <button type="button" onClick={() => onChange(100)} className="text-xs text-gray-500 underline shrink-0">취소</button>
         </div>
       ) : (
         <>
-          <input
-            type="number" min={0} step={1} value={val}
+          <input type="number" min={0} step={1} value={val}
             onChange={e => onChange(Number(e.target.value) || 0)}
-            className="flex-1 min-w-0 border border-gray-300 rounded-lg px-2 py-2 text-sm text-center font-medium text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
+            className="flex-1 min-w-0 border border-gray-300 rounded-lg px-2 py-2 text-sm text-center font-medium text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400" />
           <span className="text-xs text-gray-400 shrink-0">g</span>
           <button type="button" onClick={() => onChange(Math.max(0, val - 10))}
             className="w-9 h-9 shrink-0 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg border border-gray-200 text-gray-600 font-bold text-lg">−</button>
@@ -72,27 +190,22 @@ function GramInput({ label, value, onChange, isSnack = false }) {
   )
 }
 
-// ── 잔반 선택 (태블릿/모바일 최적화) ──
-function WasteSelector({ label, value, onChange, isSnack = false }) {
+// ── 잔반 선택 ──
+function WasteSelector({ label, menu, value, onChange, isSnack = false }) {
   const levels = [
-    { v: 0, l: '다 먹음' },
-    { v: 1, l: '25%' },
-    { v: 2, l: '50%' },
-    { v: 3, l: '75%' },
-    { v: 4, l: '모두' },
+    { v: 0, l: '다 먹음' }, { v: 1, l: '25%' }, { v: 2, l: '50%' }, { v: 3, l: '75%' }, { v: 4, l: '모두' },
   ]
   const isDeferred = value === '추후섭취'
   return (
     <div className="flex items-center gap-3 py-3 border-b border-gray-100 last:border-0">
-      {/* 음식 이름 */}
-      <span className="text-sm font-medium text-gray-700 w-14 shrink-0">{label}</span>
+      <div className="w-16 shrink-0">
+        <span className="text-sm font-medium text-gray-700 block">{label}</span>
+        {menu && <span className="text-xs text-blue-500 leading-tight block">{menu}</span>}
+      </div>
       {isDeferred ? (
         <div className="flex-1 flex items-center gap-2">
-          <span className="flex-1 text-center text-sm font-medium text-orange-600 bg-orange-50 border border-orange-200 rounded-lg py-2">
-            추후 섭취
-          </span>
-          <button type="button" onClick={() => onChange(0)}
-            className="text-xs text-gray-500 underline shrink-0">취소</button>
+          <span className="flex-1 text-center text-sm font-medium text-orange-600 bg-orange-50 border border-orange-200 rounded-lg py-2">추후 섭취</span>
+          <button type="button" onClick={() => onChange(0)} className="text-xs text-gray-500 underline shrink-0">취소</button>
         </div>
       ) : (
         <div className="flex gap-1.5 flex-1">
@@ -116,10 +229,10 @@ function WasteSelector({ label, value, onChange, isSnack = false }) {
   )
 }
 
-// ── 사진 업로드 박스 (촬영 + 앨범 선택 분리) ──
+// ── 사진 업로드 ──
 function PhotoUploader({ day, meal, photoType, label, uploadedUrl, onUploaded, onDeleted }) {
-  const cameraRef = useRef(null)   // 카메라 촬영용
-  const galleryRef = useRef(null)  // 앨범 선택용
+  const cameraRef = useRef(null)
+  const galleryRef = useRef(null)
   const [uploading, setUploading] = useState(false)
   const [preview, setPreview] = useState(uploadedUrl || null)
   const [error, setError] = useState('')
@@ -144,9 +257,7 @@ function PhotoUploader({ day, meal, photoType, label, uploadedUrl, onUploaded, o
     } catch (e) {
       setError(e.response?.data?.detail || '업로드 실패')
       setPreview(uploadedUrl || null)
-    } finally {
-      setUploading(false)
-    }
+    } finally { setUploading(false) }
   }
 
   const handleDelete = async () => {
@@ -164,11 +275,9 @@ function PhotoUploader({ day, meal, photoType, label, uploadedUrl, onUploaded, o
   return (
     <div className="flex-1 min-w-0">
       <p className="text-sm font-semibold text-gray-700 mb-2 text-center">{label}</p>
-
       {preview ? (
         <div className="relative">
-          <img src={preview} alt={label}
-            className="w-full h-36 object-cover rounded-xl border border-gray-200" />
+          <img src={preview} alt={label} className="w-full h-36 object-cover rounded-xl border border-gray-200" />
           {uploading && (
             <div className="absolute inset-0 bg-black/40 rounded-xl flex items-center justify-center">
               <span className="text-white text-sm font-medium">업로드 중...</span>
@@ -177,19 +286,12 @@ function PhotoUploader({ day, meal, photoType, label, uploadedUrl, onUploaded, o
           {!uploading && (
             <>
               <button type="button" onClick={handleDelete}
-                className="absolute top-2 right-2 w-7 h-7 bg-red-500 text-white rounded-full text-sm flex items-center justify-center hover:bg-red-600 shadow">
-                ✕
-              </button>
-              {/* 재촬영/재선택 버튼 */}
+                className="absolute top-2 right-2 w-7 h-7 bg-red-500 text-white rounded-full text-sm flex items-center justify-center hover:bg-red-600 shadow">✕</button>
               <div className="absolute bottom-2 left-0 right-0 flex gap-1 justify-center px-2">
                 <button type="button" onClick={() => cameraRef.current?.click()}
-                  className="flex-1 bg-black/60 text-white text-xs py-1 rounded-lg hover:bg-black/80">
-                  📷 재촬영
-                </button>
+                  className="flex-1 bg-black/60 text-white text-xs py-1 rounded-lg hover:bg-black/80">📷 재촬영</button>
                 <button type="button" onClick={() => galleryRef.current?.click()}
-                  className="flex-1 bg-black/60 text-white text-xs py-1 rounded-lg hover:bg-black/80">
-                  🖼 앨범
-                </button>
+                  className="flex-1 bg-black/60 text-white text-xs py-1 rounded-lg hover:bg-black/80">🖼 앨범</button>
               </div>
             </>
           )}
@@ -202,16 +304,12 @@ function PhotoUploader({ day, meal, photoType, label, uploadedUrl, onUploaded, o
             </div>
           ) : (
             <>
-              {/* 촬영 버튼 */}
-              <button type="button" onClick={() => cameraRef.current?.click()}
-                disabled={uploading}
+              <button type="button" onClick={() => cameraRef.current?.click()} disabled={uploading}
                 className="w-full py-4 flex flex-col items-center gap-1 hover:bg-blue-50 transition-colors border-b border-gray-200">
                 <span className="text-2xl">📷</span>
                 <span className="text-sm font-medium text-blue-600">사진 촬영</span>
               </button>
-              {/* 앨범 선택 버튼 */}
-              <button type="button" onClick={() => galleryRef.current?.click()}
-                disabled={uploading}
+              <button type="button" onClick={() => galleryRef.current?.click()} disabled={uploading}
                 className="w-full py-4 flex flex-col items-center gap-1 hover:bg-green-50 transition-colors">
                 <span className="text-2xl">🖼️</span>
                 <span className="text-sm font-medium text-green-600">앨범에서 선택</span>
@@ -220,17 +318,10 @@ function PhotoUploader({ day, meal, photoType, label, uploadedUrl, onUploaded, o
           )}
         </div>
       )}
-
       {error && <p className="text-xs text-red-500 mt-1 text-center">{error}</p>}
-
-      {/* 카메라 촬영 전용 input */}
-      <input ref={cameraRef} type="file" accept="image/*" capture="environment"
-        className="hidden"
+      <input ref={cameraRef} type="file" accept="image/*" capture="environment" className="hidden"
         onChange={e => handleFile(e.target.files?.[0])} />
-
-      {/* 앨범 선택 전용 input (capture 없음) */}
-      <input ref={galleryRef} type="file" accept="image/*"
-        className="hidden"
+      <input ref={galleryRef} type="file" accept="image/*" className="hidden"
         onChange={e => handleFile(e.target.files?.[0])} />
     </div>
   )
@@ -264,6 +355,9 @@ export default function NutritionSurveyPage() {
   }, [])
 
   const photoKey = (day, meal, type) => `day${day}_${meal}_${type}`
+
+  // 현재 일차의 끼니별 음식 목록 가져오기
+  const getFoods = (day, meal) => MEAL_FOODS_BY_DAY[day]?.[meal] || MEAL_FOODS_BY_DAY[3][meal] || []
 
   const getGram = (day, meal, food) => mealPortions[`day${day}`]?.[meal]?.[food] ?? 100
   const setGram = (day, meal, food, val) =>
@@ -308,7 +402,6 @@ export default function NutritionSurveyPage() {
       return n
     }, 0)
 
-  // 일차 탭
   const DayTabs = ({ showPhotoCount = false }) => (
     <div className="flex gap-2 mb-4 flex-wrap">
       {DAYS.map(d => {
@@ -339,32 +432,25 @@ export default function NutritionSurveyPage() {
       onDashboard={() => navigate('/dashboard')}
       nextLabel={saving ? '저장 중...' : undefined}
     >
-
-      {/* ── 1페이지: 섭취량 ── */}
+      {/* ── 1페이지: 배식량 ── */}
       {page === 1 && (
         <div>
           <h2 className="section-title">끼니별 음식 배식량 입력</h2>
           <InfoBox>📝 5일 동안 각 끼니에서 제공한 음식의 무게(g)를 입력해주세요.</InfoBox>
-
-          {/* 일차 탭 */}
           <DayTabs />
-
-          {/* 끼니 탭 */}
           <div className="flex gap-1.5 mb-4 flex-wrap">
             {MEALS.map(meal => (
-              <button key={meal} type="button"
-                onClick={() => setActiveMeal(meal)}
+              <button key={meal} type="button" onClick={() => setActiveMeal(meal)}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   activeMeal === meal ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}>{meal}</button>
             ))}
           </div>
-
-          {/* 선택된 끼니의 음식 목록 - 세로로 한 페이지에 */}
           <div className="bg-gray-50 rounded-xl px-4 py-2">
             <p className="text-xs text-gray-400 mb-1 pt-2">{activeDay}일차 · {activeMeal}</p>
-            {MEAL_FOODS[activeMeal].map(food => (
-              <GramInput key={food} label={food}
+            {getFoods(activeDay, activeMeal).map(({ food, menu }) => (
+              <GramInput key={food} label={food} menu={menu}
+                isSnack={activeMeal === '간식1' || activeMeal === '간식2'}
                 value={getGram(activeDay, activeMeal, food)}
                 onChange={v => setGram(activeDay, activeMeal, food, v)} />
             ))}
@@ -380,8 +466,6 @@ export default function NutritionSurveyPage() {
             ① 원형 그림으로 잔반량을 선택하고<br />
             ② 각 끼니의 <strong>식전·식후 사진</strong>을 업로드해주세요.
           </InfoBox>
-
-          {/* 잔반 범례 */}
           <div className="flex justify-around mb-4 p-3 bg-gray-50 rounded-xl">
             {[{l:0,t:'다 먹음'},{l:1,t:'25%'},{l:2,t:'50%'},{l:3,t:'75%'},{l:4,t:'모두'}].map(item => (
               <div key={item.l} className="text-center">
@@ -390,31 +474,21 @@ export default function NutritionSurveyPage() {
               </div>
             ))}
           </div>
-
           <DayTabs showPhotoCount />
-
           {MEALS.map(meal => (
             <div key={meal} className="mb-6 border border-gray-100 rounded-2xl p-4 bg-white shadow-sm">
               <h3 className="text-base font-bold text-blue-700 mb-4 border-b border-blue-100 pb-2">{meal}</h3>
-
-              {/* 잔반량 - 음식명 왼쪽, 선택 버튼 오른쪽 */}
               <div className="mb-5 bg-gray-50 rounded-xl px-3 py-1">
-                {MEAL_FOODS[meal].map(food => (
-                  <WasteSelector key={food} label={food}
+                {getFoods(activeDay, meal).map(({ food, menu }) => (
+                  <WasteSelector key={food} label={food} menu={menu}
                     isSnack={meal === '간식1' || meal === '간식2'}
                     value={getWaste(activeDay, meal, food)}
                     onChange={v => setWaste(activeDay, meal, food, v)} />
                 ))}
               </div>
-
-              {/* 식전 / 식후 사진 - 나란히 배치 */}
               <div className="grid grid-cols-2 gap-3">
                 {['before', 'after'].map(type => (
-                  <PhotoUploader
-                    key={type}
-                    day={activeDay}
-                    meal={meal}
-                    photoType={type}
+                  <PhotoUploader key={type} day={activeDay} meal={meal} photoType={type}
                     label={type === 'before' ? '🍽️ 식전' : '🥣 식후'}
                     uploadedUrl={photos[photoKey(activeDay, meal, type)]?.url}
                     onUploaded={(url, fileName) =>
@@ -453,12 +527,9 @@ export default function NutritionSurveyPage() {
             </div>
           </div>
           <Divider label="저장" />
-          <InfoBox type="success">
-            ✅ 제출 버튼을 눌러 저장하세요.<br/>
-          </InfoBox>
+          <InfoBox type="success">✅ 제출 버튼을 눌러 저장하세요.</InfoBox>
         </div>
       )}
-
     </SurveyLayout>
   )
 }

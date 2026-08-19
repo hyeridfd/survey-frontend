@@ -606,7 +606,16 @@ export default function NutritionSurveyPage() {
             <div key={meal} className="mb-6 border border-gray-100 rounded-2xl p-4 bg-white shadow-sm">
               <h3 className="text-base font-bold text-blue-700 mb-4 border-b border-blue-100 pb-2">{meal}</h3>
               <div className="mb-5 bg-gray-50 rounded-xl px-3 py-1">
-                {getFoods(activeDay, meal).map(({ food, menu }) => (
+                {getFoods(activeDay, meal)
+                  .filter(({ food }) => {
+                    // 김치1/김치2는 배식량에 값이 있을 때만 표시
+                    if (food === '김치1' || food === '김치2') {
+                      const portionVal = getGram(activeDay, meal, food)
+                      return portionVal !== '' && portionVal !== null && portionVal !== undefined
+                    }
+                    return true
+                  })
+                  .map(({ food, menu }) => (
                   <WasteSelector key={food} label={food} menu={menu}
                     isSnack={meal === '간식1' || meal === '간식2'}
                     value={getWaste(activeDay, meal, food)}

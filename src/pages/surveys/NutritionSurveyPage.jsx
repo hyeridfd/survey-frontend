@@ -222,14 +222,7 @@ const MEAL_FORM_MAP = {
 const normalizeMealForm = (mf) => MEAL_FORM_MAP[mf] || mf
 
 // 괄호 포함 특이 meal_form → 기본 meal_form으로 매핑
-const MEAL_FORM_MAP = {
-  '일반밥/일반찬(백김치)':     '일반밥/일반찬_백김치전용',
-  '일반밥/다진찬(다진백김치)': '일반밥/다진찬_백김치전용',
-  '죽/갈찬(다진백김치)':       '죽/갈찬_다진백김치',
-}
 
-// applyDefaultPortions 호출 전에 meal_form 정규화
-const normalizeMealForm = (mf) => MEAL_FORM_MAP[mf] || mf
 
 // ── 잔반량 원형 SVG ──
 function WasteCircle({ level, size = 40 }) {

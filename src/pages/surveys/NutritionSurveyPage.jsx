@@ -9,6 +9,15 @@ const DAYS = [1, 2, 3, 4, 5]
 
 // ── 5일치 메뉴 데이터 ──
 // food: 음식 구분, menu: 메뉴명 (실제 식단에 맞게 수정)
+// ── 간식 배식량 기본값 (일차별 공통) ──
+const SNACK_DEFAULT_PORTIONS = {
+  1: { '간식1': { '간식': 190 }, '간식2': { '간식': 150 } },
+  2: { '간식1': { '간식': 125 }, '간식2': { '간식A': 23, '간식B': 190 } },
+  3: { '간식1': { '간식': 80  }, '간식2': { '간식A': 23.8, '간식B': 65 } },
+  4: { '간식1': { '간식': 190 }, '간식2': { '간식': 118 } },
+  5: { '간식1': { '간식': 125 }, '간식2': { '간식': 124.9 } },
+}
+
 const MEAL_FOODS_BY_DAY = {
   1: { // 8/7
     '아침': [
@@ -63,7 +72,7 @@ const MEAL_FOODS_BY_DAY = {
     ],
     '간식2': [
       { food: '간식A', menu: '카스타드' },
-      { food: '간식B', menu: '주스' },
+      { food: '간식B', menu: '주스(델몬트드링크포도)' },
     ],
     '저녁': [
       { food: '밥/죽',  menu: '잡곡밥/영양죽' },
@@ -150,7 +159,7 @@ const MEAL_FOODS_BY_DAY = {
       { food: '김치1',  menu: '배추김치' },
       { food: '김치2',  menu: '백김치' },
     ],
-    '간식1': [{ food: '간식', menu: '바나나' }],
+    '간식1': [{ food: '간식', menu: '비피더스' }],
     '점심':  [
       { food: '밥/죽',  menu: '잡곡밥/영양죽(두부죽) (HS09: 흰죽)' },
       { food: '국/탕',  menu: '배추국' },
@@ -680,7 +689,15 @@ export default function NutritionSurveyPage() {
     return MEAL_FOODS_BY_DAY[day]?.[meal] || MEAL_FOODS_BY_DAY[3][meal] || []
   }
 
-  const getGram = (day, meal, food) => mealPortions[`day${day}`]?.[meal]?.[food] ?? ''
+  const getGram = (day, meal, food) => {
+    const stored = mealPortions[`day${day}`]?.[meal]?.[food]
+    if (stored !== undefined && stored !== null) return stored
+    // 간식은 SNACK_DEFAULT_PORTIONS에서 기본값
+    if (meal === '간식1' || meal === '간식2') {
+      return SNACK_DEFAULT_PORTIONS?.[day]?.[meal]?.[food] ?? ''
+    }
+    return ''
+  }
   const setGram = (day, meal, food, val) =>
     setMealPortions(prev => ({ ...prev, [`day${day}`]: { ...(prev[`day${day}`] || {}), [meal]: { ...(prev[`day${day}`]?.[meal] || {}), [food]: val } } }))
 

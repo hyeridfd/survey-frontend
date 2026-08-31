@@ -57,7 +57,7 @@ const MEAL_FOODS_BY_DAY = {
       { food: '국/탕',  menu: '냉이된장국' },
       { food: '주찬',   menu: '돈육김치찜' },
       { food: '부찬1',  menu: '건새우그린빈볶음' },
-      { food: '부찬2',  menu: '오이상추무침' },
+      { food: '부찬2',  menu: '꼬시래기무무침' },
       { food: '김치1',  menu: '배추김치' },
       { food: '김치2',  menu: '백김치' },
     ],
@@ -70,69 +70,109 @@ const MEAL_FOODS_BY_DAY = {
       { food: '국/탕',  menu: '감자양파국' },
       { food: '주찬',   menu: '스크램블에그' },
       { food: '부찬1',  menu: '마파두부조림' },
-      { food: '부찬2',  menu: '꼬시래기무무침' },
+      { food: '부찬2',  menu: '오이땅콩소스무침' },
       { food: '김치1',  menu: '배추김치' },
       { food: '김치2',  menu: '백김치' },
     ],
   },
-  3: { // 메뉴 미정 - 기본 구조
-    '아침':  [
-      { food: '밥/죽', menu: '흰밥/흰죽' }, { food: '국/탕', menu: '유채국' },
-      { food: '주찬',  menu: '참치무조림' }, { food: '부찬1', menu: '느타리버섯볶음' },
-      { food: '부찬2', menu: '오이지무침' }, { food: '김치1', menu: '배추김치' }, { food: '김치2', menu: '백김치' },
+  3: { // 8/27
+    '아침': [
+      { food: '밥/죽',  menu: '잡곡밥/잡곡죽' },
+      { food: '국/탕',  menu: '' },
+      { food: '주찬',   menu: '' },
+      { food: '부찬1',  menu: '' },
+      { food: '부찬2',  menu: '' },
+      { food: '김치1',  menu: '배추김치' },
+      { food: '김치2',  menu: '백김치' },
     ],
-    '간식1': [{ food: '간식', menu: '떠먹는요거트' }],
+    '간식1': [{ food: '간식', menu: '' }],
     '점심':  [
-      { food: '밥/죽', menu: '잡곡밥/영양죽' }, { food: '국/탕', menu: '잔치국수' },
-      { food: '주찬',  menu: '새우튀김샐러드' }, { food: '부찬1', menu: '후랑크마늘쫑볶음' },
-      { food: '부찬2', menu: '표고버섯볶음' }, { food: '김치1', menu: '배추김치' }, { food: '김치2', menu: '백김치' },
+      { food: '밥/죽',  menu: '잡곡밥/유채죽' },
+      { food: '국/탕',  menu: '' },
+      { food: '주찬',   menu: '' },
+      { food: '부찬1',  menu: '' },
+      { food: '부찬2',  menu: '' },
+      { food: '김치1',  menu: '배추김치' },
+      { food: '김치2',  menu: '백김치' },
     ],
     '간식2': [
       { food: '간식A', menu: '마가렛트' },
       { food: '간식B', menu: '요구르트' },
     ],
     '저녁':  [
-      { food: '밥/죽', menu: '잡곡밥/영양죽' }, { food: '국/탕', menu: '콩나물국' },
-      { food: '주찬',  menu: '훈제오리*단호박찜' }, { food: '부찬1', menu: '쌈무' },
-      { food: '부찬2', menu: '열무겉절이' }, { food: '김치1', menu: '배추김치' }, { food: '김치2', menu: '백김치' },
+      { food: '밥/죽',  menu: '잡곡밥/표고죽' },
+      { food: '국/탕',  menu: '' },
+      { food: '주찬',   menu: '' },
+      { food: '부찬1',  menu: '' },
+      { food: '부찬2',  menu: '' },
+      { food: '김치1',  menu: '배추김치' },
+      { food: '김치2',  menu: '백김치' },
     ],
   },
-  4: { // 메뉴 미정
-    '아침':  [
-      { food: '밥/죽', menu: '흰밥/흰죽' }, { food: '국/탕', menu: '민물새우맑은탕' },
-      { food: '주찬',  menu: '두부양념조림' }, { food: '부찬1', menu: '치커리겉절이' },
-      { food: '부찬2', menu: '콩나물무침' }, { food: '김치1', menu: '배추김치' }, { food: '김치2', menu: '백김치' },
+  4: { // 8/28
+    '아침': [
+      { food: '밥/죽',  menu: '잡곡밥/잡곡죽 (HS09: 흰죽)' },
+      { food: '국/탕',  menu: '' },
+      { food: '주찬',   menu: '' },
+      { food: '부찬1',  menu: '' },
+      { food: '부찬2',  menu: '' },
+      { food: '김치1',  menu: '배추김치' },
+      { food: '김치2',  menu: '백김치' },
     ],
-    '간식1': [{ food: '간식', menu: '검은콩두유' }],
+    '간식1': [{ food: '간식', menu: '' }],
     '점심':  [
-      { food: '밥/죽', menu: '잡곡밥/영양죽' }, { food: '국/탕', menu: '고추장찌개' },
-      { food: '주찬',  menu: '바베큐찜닭' }, { food: '부찬1', menu: '연근검은깨강정' },
-      { food: '부찬2', menu: '배추된장나물' }, { food: '김치1', menu: '배추김치' }, { food: '김치2', menu: '백김치' },
+      { food: '밥/죽',  menu: '잡곡밥/콩나물죽 (HS09: 흰죽)' },
+      { food: '국/탕',  menu: '' },
+      { food: '주찬',   menu: '' },
+      { food: '부찬1',  menu: '' },
+      { food: '부찬2',  menu: '' },
+      { food: '김치1',  menu: '배추김치' },
+      { food: '김치2',  menu: '백김치' },
     ],
-    '간식2': [{ food: '간식', menu: '푸딩' }],
+    '간식2': [
+      { food: '간식A', menu: 'HS01-18: 파인애플맛 푸딩' },
+      { food: '간식B', menu: 'HS19-37: 망고맛 푸딩' },
+      { food: '간식C', menu: 'HS38-52: 멜론맛 푸딩' },
+    ],
     '저녁':  [
-      { food: '밥/죽', menu: '잡곡밥/영양죽' }, { food: '국/탕', menu: '시금치국' },
-      { food: '주찬',  menu: '삼치무조림' }, { food: '부찬1', menu: '건고구마순볶음' },
-      { food: '부찬2', menu: '비트모듬피클' }, { food: '김치1', menu: '배추김치' }, { food: '김치2', menu: '백김치' },
+      { food: '밥/죽',  menu: '잡곡밥/닭+배추죽 (HS09: 흰죽)' },
+      { food: '국/탕',  menu: '' },
+      { food: '주찬',   menu: '' },
+      { food: '부찬1',  menu: '' },
+      { food: '부찬2',  menu: '' },
+      { food: '김치1',  menu: '배추김치' },
+      { food: '김치2',  menu: '백김치' },
     ],
   },
-  5: { // 메뉴 미정
-    '아침':  [
-      { food: '밥/죽', menu: '흰밥/흰죽' }, { food: '국/탕', menu: '토란국' },
-      { food: '주찬',  menu: '돈민찌표고곤약조림' }, { food: '부찬1', menu: '얼갈이나물' },
-      { food: '부찬2', menu: '갓절임무침' }, { food: '김치1', menu: '배추김치' }, { food: '김치2', menu: '백김치' },
+  5: { // 8/29
+    '아침': [
+      { food: '밥/죽',  menu: '잡곡밥/잡곡죽 (HS09,HS29: 흰죽)' },
+      { food: '국/탕',  menu: '' },
+      { food: '주찬',   menu: '' },
+      { food: '부찬1',  menu: '' },
+      { food: '부찬2',  menu: '' },
+      { food: '김치1',  menu: '배추김치' },
+      { food: '김치2',  menu: '백김치' },
     ],
-    '간식1': [{ food: '간식', menu: '비피더스' }],
+    '간식1': [{ food: '간식', menu: '바나나' }],
     '점심':  [
-      { food: '밥/죽', menu: '잡곡밥/영양죽' }, { food: '국/탕', menu: '배추국' },
-      { food: '주찬',  menu: '고등어양념구이' }, { food: '부찬1', menu: '통들깨무나물' },
-      { food: '부찬2', menu: '목이오리엔탈무침' }, { food: '김치1', menu: '배추김치' }, { food: '김치2', menu: '백김치' },
+      { food: '밥/죽',  menu: '잡곡밥/두부죽 (HS09: 흰죽)' },
+      { food: '국/탕',  menu: '' },
+      { food: '주찬',   menu: '' },
+      { food: '부찬1',  menu: '' },
+      { food: '부찬2',  menu: '' },
+      { food: '김치1',  menu: '배추김치' },
+      { food: '김치2',  menu: '백김치' },
     ],
-    '간식2': [{ food: '간식', menu: '바나나' }],
+    '간식2': [{ food: '간식', menu: '' }],
     '저녁':  [
-      { food: '밥/죽', menu: '잡곡밥/영양죽' }, { food: '국/탕', menu: '콩가루두부아욱국' },
-      { food: '주찬',  menu: '스크램블에그' }, { food: '부찬1', menu: '비엔나피망조림' },
-      { food: '부찬2', menu: '미역초무침' }, { food: '김치1', menu: '배추김치' }, { food: '김치2', menu: '백김치' },
+      { food: '밥/죽',  menu: '잡곡밥/목이버섯죽 (HS09: 흰죽)' },
+      { food: '국/탕',  menu: '' },
+      { food: '주찬',   menu: '' },
+      { food: '부찬1',  menu: '' },
+      { food: '부찬2',  menu: '' },
+      { food: '김치1',  menu: '배추김치' },
+      { food: '김치2',  menu: '백김치' },
     ],
   },
 }
@@ -456,14 +496,14 @@ export default function NutritionSurveyPage() {
               setMealPortions(typeof d.meal_portions === 'string' ? JSON.parse(d.meal_portions) : d.meal_portions)
             } else if (mealForm && (APPLICABLE_MEAL_FORMS.includes(mealForm) || MEAL_FORM_MAP[mealForm])) {
               // 기존 데이터 없고 meal_form이 적용 대상이면 기본값 자동 세팅
-              applyDefaultPortions(normalizeMealForm(mealForm))
+              applyDefaultPortions(normalizeMealForm(mealForm), elderlyId)
             }
             if (d.plate_waste) setPlateWaste(typeof d.plate_waste === 'string' ? JSON.parse(d.plate_waste) : d.plate_waste)
             if (d.photos)      setPhotos(typeof d.photos === 'string' ? JSON.parse(d.photos) : d.photos)
           } catch {}
         } else if (mealForm && (APPLICABLE_MEAL_FORMS.includes(mealForm) || MEAL_FORM_MAP[mealForm])) {
           // 아예 데이터가 없으면 기본값 자동 세팅
-          applyDefaultPortions(normalizeMealForm(mealForm))
+          applyDefaultPortions(normalizeMealForm(mealForm), elderlyId)
         }
       } catch {}
     }
@@ -471,12 +511,31 @@ export default function NutritionSurveyPage() {
     loadData()
   }, [])
 
-  // meal_form에 따라 1~2일차 배식량 기본값 적용
-  const applyDefaultPortions = (mealForm) => {
+  // meal_form에 따라 배식량 기본값 적용 (1~5일차)
+  const applyDefaultPortions = (mealForm, elderlyId) => {
     const portions = {}
-    ;[1, 2].forEach(day => {
+    const isHS09 = elderlyId === 'HS09'
+    const isHS29 = elderlyId === 'HS29'
+    ;[1, 2, 3, 4, 5].forEach(day => {
       portions[`day${day}`] = {}
       ;['아침', '점심', '저녁'].forEach(meal => {
+        // HS09: 4~5일차 밥/죽 흰죽 무게 적용
+        if (isHS09 && day >= 4) {
+          const hs09defaults = DEFAULT_PORTIONS?.[String(day)]?.[meal]?.['일반밥/일반찬_HS09']
+          const base = { ...(DEFAULT_PORTIONS?.[String(day)]?.[meal]?.[mealForm] || {}) }
+          if (hs09defaults?.['밥/죽']) base['밥/죽'] = hs09defaults['밥/죽']
+          if (Object.keys(base).length > 0) portions[`day${day}`][meal] = base
+          return
+        }
+        // HS29: 5일차 아침만 밥/죽 흰죽 무게 적용
+        if (isHS29 && day === 5 && meal === '아침') {
+          const hs29defaults = DEFAULT_PORTIONS?.['5']?.['아침']?.['죽/다진찬_HS29']
+          const base = { ...(DEFAULT_PORTIONS?.[String(day)]?.[meal]?.[mealForm] || {}) }
+          if (hs29defaults?.['밥/죽']) base['밥/죽'] = hs29defaults['밥/죽']
+          if (Object.keys(base).length > 0) portions[`day${day}`][meal] = base
+          return
+        }
+        // 일반 케이스
         const defaults = DEFAULT_PORTIONS?.[String(day)]?.[meal]?.[mealForm]
         if (defaults) portions[`day${day}`][meal] = { ...defaults }
       })

@@ -129,11 +129,7 @@ const MEAL_FOODS_BY_DAY = {
       { food: '김치1',  menu: '배추김치' },
       { food: '김치2',  menu: '백김치' },
     ],
-    '간식2': [
-      { food: '간식A', menu: 'HS01-18: 파인애플맛 푸딩' },
-      { food: '간식B', menu: 'HS19-37: 망고맛 푸딩' },
-      { food: '간식C', menu: 'HS38-52: 멜론맛 푸딩' },
-    ],
+    '간식2': [{ food: '간식', menu: '푸딩' }], // 실제 메뉴는 elderlyId 기반으로 동적 결정
     '저녁':  [
       { food: '밥/죽',  menu: '잡곡밥/영양죽(닭+배추죽) (HS09: 흰죽)' },
       { food: '국/탕',  menu: '시금치국' },
@@ -617,7 +613,20 @@ export default function NutritionSurveyPage() {
           setData(d)
           try {
             if (d.meal_portions) {
-              setMealPortions(typeof d.meal_portions === 'string' ? JSON.parse(d.meal_portions) : d.meal_portions)
+              const existing = typeof d.meal_portions === 'string' ? JSON.parse(d.meal_portions) : d.meal_portions
+              // day3~5가 없으면 자동입력으로 채우기
+              if (mealForm && (APPLICABLE_MEAL_FORMS.includes(mealForm) || MEAL_FORM_MAP[mealForm])) {
+                const hasDay3 = existing['day3'] && Object.keys(existing['day3']).length > 0
+                if (!hasDay3) {
+                  const auto = getDefaultPortions(normalizeMealForm(mealForm), elderlyId)
+                  const merged = { ...auto, ...existing }
+                  setMealPortions(merged)
+                } else {
+                  setMealPortions(existing)
+                }
+              } else {
+                setMealPortions(existing)
+              }
             } else if (mealForm && (APPLICABLE_MEAL_FORMS.includes(mealForm) || MEAL_FORM_MAP[mealForm])) {
               // 기존 데이터 없고 meal_form이 적용 대상이면 기본값 자동 세팅
               applyDefaultPortions(normalizeMealForm(mealForm), elderlyId)
@@ -636,41 +645,58 @@ export default function NutritionSurveyPage() {
   }, [])
 
   // meal_form에 따라 배식량 기본값 적용 (1~5일차)
-  const applyDefaultPortions = (mealForm, elderlyId) => {
+  // 배식량 기본값 계산 (순수 함수)
+  const getDefaultPortions = (mealForm, elderlyId) => {
     const portions = {}
     const isHS09 = elderlyId === 'HS09'
     const isHS29 = elderlyId === 'HS29'
     ;[1, 2, 3, 4, 5].forEach(day => {
       portions[`day${day}`] = {}
       ;['아침', '점심', '저녁'].forEach(meal => {
-        // HS09: 4~5일차 밥/죽 흰죽 무게 적용
         if (isHS09 && day >= 4) {
-          const hs09defaults = DEFAULT_PORTIONS?.[String(day)]?.[meal]?.['일반밥/일반찬_HS09']
+          const hs09 = DEFAULT_PORTIONS?.[String(day)]?.[meal]?.['일반밥/일반찬_HS09']
           const base = { ...(DEFAULT_PORTIONS?.[String(day)]?.[meal]?.[mealForm] || {}) }
-          if (hs09defaults?.['밥/죽']) base['밥/죽'] = hs09defaults['밥/죽']
+          if (hs09?.['밥/죽']) base['밥/죽'] = hs09['밥/죽']
           if (Object.keys(base).length > 0) portions[`day${day}`][meal] = base
           return
         }
-        // HS29: 5일차 아침만 밥/죽 흰죽 무게 적용
         if (isHS29 && day === 5 && meal === '아침') {
-          const hs29defaults = DEFAULT_PORTIONS?.['5']?.['아침']?.['죽/다진찬_HS29']
+          const hs29 = DEFAULT_PORTIONS?.['5']?.['아침']?.['죽/다진찬_HS29']
           const base = { ...(DEFAULT_PORTIONS?.[String(day)]?.[meal]?.[mealForm] || {}) }
-          if (hs29defaults?.['밥/죽']) base['밥/죽'] = hs29defaults['밥/죽']
+          if (hs29?.['밥/죽']) base['밥/죽'] = hs29['밥/죽']
           if (Object.keys(base).length > 0) portions[`day${day}`][meal] = base
           return
         }
-        // 일반 케이스
         const defaults = DEFAULT_PORTIONS?.[String(day)]?.[meal]?.[mealForm]
         if (defaults) portions[`day${day}`][meal] = { ...defaults }
       })
     })
-    setMealPortions(portions)
+    return portions
+  }
+
+  const applyDefaultPortions = (mealForm, elderlyId) => {
+    setMealPortions(getDefaultPortions(mealForm, elderlyId))
   }
 
   const photoKey = (day, meal, type) => `day${day}_${meal}_${type}`
 
   // 현재 일차의 끼니별 음식 목록 가져오기
-  const getFoods = (day, meal) => MEAL_FOODS_BY_DAY[day]?.[meal] || MEAL_FOODS_BY_DAY[3][meal] || []
+  // 어르신 ID
+  const currentElderlyId = JSON.parse(localStorage.getItem('user') || '{}')?.elderly_id || ''
+
+  // 4일차 간식2: HS 번호 기반으로 푸딩 종류 결정
+  const getSnack2Day4 = () => {
+    const num = parseInt(currentElderlyId.replace('HS', ''), 10)
+    if (num >= 1 && num <= 18) return [{ food: '간식', menu: '파인애플맛 푸딩' }]
+    if (num >= 19 && num <= 37) return [{ food: '간식', menu: '망고맛 푸딩' }]
+    if (num >= 38 && num <= 52) return [{ food: '간식', menu: '멜론맛 푸딩' }]
+    return [{ food: '간식', menu: '푸딩' }]
+  }
+
+  const getFoods = (day, meal) => {
+    if (day === 4 && meal === '간식2') return getSnack2Day4()
+    return MEAL_FOODS_BY_DAY[day]?.[meal] || MEAL_FOODS_BY_DAY[3][meal] || []
+  }
 
   const getGram = (day, meal, food) => mealPortions[`day${day}`]?.[meal]?.[food] ?? ''
   const setGram = (day, meal, food, val) =>

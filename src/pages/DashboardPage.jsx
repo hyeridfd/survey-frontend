@@ -87,7 +87,11 @@ export default function DashboardPage() {
           ) : (
             <div className="space-y-3">
               {SURVEYS.map((s, i) => {
-                const done = progress?.[s.field]
+                const nutritionDays = progress?.nutrition_completed_days || 0
+                const done = s.key === 'nutrition'
+                  ? nutritionDays >= 5
+                  : progress?.[s.field]
+                const partial = s.key === 'nutrition' && nutritionDays > 0 && nutritionDays < 5
                 return (
                   <button
                     key={s.key}
@@ -112,8 +116,15 @@ export default function DashboardPage() {
                         <p className={`font-semibold text-sm ${done ? 'text-white' : 'text-gray-800'}`}>
                           {s.label}
                         </p>
-                        <p className={`text-xs mt-0.5 ${done ? 'text-green-300' : 'text-gray-400'}`}>
-                          {done ? '완료됨 · 수정 가능' : '미완료'}
+                        <p className={`text-xs mt-0.5 ${done ? 'text-green-300' : partial ? 'text-orange-300' : 'text-gray-400'}`}>
+                          {s.key === 'nutrition'
+                            ? nutritionDays >= 5
+                              ? '완료됨 (5/5일) · 수정 가능'
+                              : nutritionDays > 0
+                              ? `${nutritionDays}/5일 완료 · 수정 가능`
+                              : '미완료'
+                            : done ? '완료됨 · 수정 가능' : '미완료'
+                          }
                         </p>
                       </div>
                     </div>

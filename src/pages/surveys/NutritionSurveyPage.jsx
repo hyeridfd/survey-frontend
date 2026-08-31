@@ -720,8 +720,14 @@ export default function NutritionSurveyPage() {
   const handleSubmit = async () => {
     setSaving(true)
     try {
+      // 완료된 일차 계산
+      const completedDays = [1,2,3,4,5].filter(day => {
+        const mp = mealPortions[`day${day}`] || {}
+        const pw = plateWaste[`day${day}`] || {}
+        return Object.keys(mp).length > 0 || Object.keys(pw).length > 0
+      })
       await api.post('/surveys/nutrition', {
-        data: { ...data, meal_portions: mealPortions, plate_waste: plateWaste, photos }
+        data: { ...data, meal_portions: mealPortions, plate_waste: plateWaste, photos, completed_days: completedDays }
       })
       setSaved(true)
       setTimeout(() => navigate('/dashboard'), 1500)
